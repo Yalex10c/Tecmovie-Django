@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Película | TECMOVIE</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #0f1014;
+            --card-bg: #1a1c23;
+            --primary-color: #E50914;
+            --primary-hover: #b80710;
+            --text-main: #ffffff;
+            --text-sec: #a9a9b3;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: rgba(15, 16, 20, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 18px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-sec);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        .account-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .account-btn img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+        }
+
+        .account-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* HERO BANNER SECTION (Fondo inyectable) */
+        .hero-banner {
+            position: relative;
+            width: 100%;
+            height: 50vh;
+            background-color: #1a1c23;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(to top, var(--bg-color) 0%, rgba(15, 16, 20, 0.8) 40%, rgba(15, 16, 20, 0.2) 100%);
+        }
+
+        .container {
+            width: 85%;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            margin-top: -100px;
+            padding-bottom: 50px;
+        }
+
+        .movie-detail-card {
+            display: flex;
+            gap: 50px;
+            background: rgba(26, 28, 35, 0.6);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            flex-wrap: wrap;
+        }
+
+        .poster {
+            flex-shrink: 0;
+            width: 280px;
+            height: 420px;
+            background: #2a2d36;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .poster i {
+            font-size: 50px;
+            color: var(--text-sec);
+            opacity: 0.3;
+        }
+
+        .movie-info {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .movie-info h1 {
+            font-size: 44px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        .meta {
+            color: var(--text-sec);
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .meta span {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .synopsis {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #cccccc;
+            margin-bottom: 30px;
+        }
+
+        .rating-box {
+            background: rgba(229, 9, 20, 0.1);
+            padding: 20px;
+            border-left: 5px solid var(--primary-color);
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .rating-score {
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+
+        .stars {
+            color: #f5c518;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .btn-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(229, 9, 20, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+        }
+
+        /* COMMENTS SECTION */
+        .comment-section {
+            margin-top: 50px;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .comment-section h2 {
+            margin-bottom: 25px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comment-section h2 i {
+            color: var(--primary-color);
+        }
+
+        .comment-input-area {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .comment-input-area img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+        }
+
+        .comment-input-area textarea {
+            flex: 1;
+            height: 55px;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-main);
+            resize: none;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .comment-input-area textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-send {
+            padding: 0 24px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-send:hover {
+            background: var(--primary-hover);
+        }
+
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .comment {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            gap: 15px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .comment img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .comment-content h4 {
+            font-size: 15px;
+            color: var(--text-sec);
+            margin-bottom: 5px;
+        }
+
+        .comment-content p {
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        /* PANEL CUENTA */
+        .account-panel {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background: #12141a;
+            border-left: 1px solid var(--border-color);
+            color: white;
+            padding: 30px;
+            transition: right 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+            z-index: 1000;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .account-panel.active {
+            right: 0;
+        }
+
+        .account-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .account-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .close-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-panel:hover {
+            background: var(--primary-color);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        .profile-header img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .account-panel ul {
+            list-style: none;
+        }
+
+        .account-panel ul li {
+            padding: 15px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            font-size: 15px;
+            color: var(--text-sec);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            border-radius: 8px;
+        }
+
+        .account-panel ul li i {
+            font-size: 18px;
+            width: 25px;
+            text-align: center;
+        }
+
+        .account-panel ul li:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 15px;
+        }
+
+        .account-panel ul li.danger:hover {
+            color: var(--primary-color);
+            background: rgba(229, 9, 20, 0.1);
+        }
+
+        footer {
+            margin-top: 60px;
+            background: #0a0b0d;
+            color: var(--text-sec);
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media(max-width: 900px) {
+            .movie-detail-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .meta {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .btn-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <a href="index2.htm" class="logo">TECMOVIE</a>
+        <ul class="nav-links">
+            <li><a href="index2.htm">Top</a></li>
+            <li><a href="index4.html">Nuevas</a></li>
+            <li>
+                <div class="account-btn" onclick="togglePanel()">
+                    <img id="navAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="User">
+                    <span id="navName">Mi Cuenta</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- HERO BANNER (Id asignado para que el script inyecte el background URL) -->
+    <div class="hero-banner" id="movieBannerDiv"></div>
+
+    <div class="container">
+
+        <div class="movie-detail-card">
+
+            <div class="poster">
+                <!-- Imagen inyectable; tiene placeholder con FontAwesome si falla -->
+                <img src="" alt="Poster" id="moviePosterImg" style="display:none;"
+                    onerror="this.style.display='none'; document.getElementById('posterInitialStatus').style.display='block';">
+                <i class="fas fa-video" id="posterInitialStatus"></i>
+            </div>
+
+            <div class="movie-info">
+
+                <h1 id="movieTitleH1">[Título de la Película Generada]</h1>
+
+                <div class="meta" id="movieMetaDiv">
+                    <!-- Se inyectarán los géneros y duración en formato span -->
+                    <span>[Género]</span>
+                    <span>[Subgénero]</span>
+                    <span>[Año]</span>
+                    <span><i class="far fa-clock"></i> [Duración]</span>
+                </div>
+
+                <p class="synopsis" id="movieSynopsisP">
+                    [Esta es una descripción o sinopsis general lista para que el backend integre el texto respectivo de
+                    la película desde la tabla SQL/MongoDB u otro medio.]
+                </p>
+
+                <div class="rating-box">
+                    <div>
+                        <div class="rating-score" id="movieScoreDiv">0.0</div>
+                    </div>
+                    <div>
+                        <div class="stars">
+                            <!-- El backend puede llenar dinámicamente las estrellas -->
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                        </div>
+                        <div style="color:var(--text-sec); font-size:13px;" id="movieReviewsCountDiv">Revisar valoración
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-actions">
+                    <a href="#" class="btn" id="btnPlayMovie"><i class="fas fa-play"></i> Reproducir / Tráiler</a>
+                    <a href="index2.htm" class="btn btn-secondary" onclick="window.history.back(); return false;"><i
+                            class="fas fa-arrow-left"></i> Volver</a>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- COMENTARIOS -->
+        <div class="comment-section">
+            <h2><i class="fas fa-comments"></i> Comunidad</h2>
+
+            <!-- Formulario para que el backend intercepte el Submit -->
+            <div class="comment-input-area">
+                <img id="commentAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="Tú">
+                <textarea id="comentarioInput"
+                    placeholder="¿Qué te pareció la película? Escribe tu reseña..."></textarea>
+                <button class="btn-send" id="btnEnviarComentario" onclick="logicaComentarioFront()">Publicar</button>
+            </div>
+
+            <!-- Contenedor general que recibirá los comentarios de la BD -->
+            <div class="comments-list" id="listaComentariosBD">
+
+                <!-- Ejemplo de comentario vacío si no hay BD conectada yet -->
+                <div class="comment" style="opacity:0.5;">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=System" alt="Sys">
+                    <div class="comment-content">
+                        <h4>Sistema Automático</h4>
+                        <p>Esperando conexión con el Backend para cargar los comentarios reales de los usuarios...</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- PANEL MI CUENTA -->
+    <div class="account-overlay" id="accountOverlay" onclick="togglePanel()"></div>
+    <div class="account-panel" id="accountPanel">
+        <div class="close-panel" onclick="togglePanel()"><i class="fas fa-times"></i></div>
+        <div class="profile-header">
+            <img id="panelAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="Perfil">
+            <h3 id="panelName">Usuario</h3>
+            <p style="color:var(--text-sec); font-size:13px; margin-top:5px;">usuario@tecmovie.com</p>
+        </div>
+        <ul>
+            <li><i class="fas fa-crown" style="color:#f5c518"></i> <strong>Suscripción:</strong> Premium Plus</li>
+            <li onclick="editarPerfilActual()"><i class="fas fa-user-edit"></i> Editar Perfil</li>
+            <li onclick="abrirConfiguracion()"><i class="fas fa-cog"></i> Configuración</li>
+            <li onclick="cambiarSesion()"><i class="fas fa-users"></i> Cambiar perfil</li>
+            <li class="danger" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</li>
+        </ul>
+    </div>
+
+    <footer>
+        TECMOVIE &copy; 2026. Plataforma Frontend enlazada con BD Backend.
+    </footer>
+
+    <!-- TEMPLATES POUR BACKEND -->
+    <template id="comment-template">
+        <div class="comment">
+            <img src="" alt="Avatar" class="tmpl-avatar">
+            <div class="comment-content">
+                <h4 class="tmpl-author">[AUTOR]</h4>
+                <p class="tmpl-body">[CUERPO DEL COMENTARIO]</p>
+                <!-- Puedes inyectar <small>Fecha</small> u otros detalles -->
+            </div>
+        </div>
+    </template>
+
+    <script>
+        let currentAvatar = "https://api.dicebear.com/7.x/bottts/svg?seed=Guest";
+        let currentName = "Usuario Activo";
+
+        window.addEventListener("DOMContentLoaded", () => {
+            let rawPerfil = localStorage.getItem("perfilActivo");
+            if (rawPerfil) {
+                let perfil = JSON.parse(rawPerfil);
+                currentAvatar = perfil.avatar || currentAvatar;
+                currentName = perfil.nombre || currentName;
+                document.getElementById("navAvatar").src = currentAvatar;
+                document.getElementById("navName").innerText = perfil.nombre || "Mi Cuenta";
+                document.getElementById("panelAvatar").src = currentAvatar;
+                document.getElementById("panelName").innerText = currentName;
+                document.getElementById("commentAvatar").src = currentAvatar;
+            }
+
+            // Aquí el Backend usaría el URLSearchParams para obtener ?id= de la película
+            // const urlParams = new URLSearchParams(window.location.search);
+            // const movieId = urlParams.get('id');
+            // fetch(`/api/movies/${movieId}`)... y reemplazar los ID como 'movieTitleH1'
+        });
+
+        function togglePanel() { document.getElementById("accountPanel").classList.toggle("active"); document.getElementById("accountOverlay").classList.toggle("active"); }
+        function cerrarSesion() { alert("Sesión cerrada correctamente"); localStorage.removeItem("perfilActivo"); window.location.href = "index.htm"; }
+        function cambiarSesion() { window.location.href = "indexC.html"; }
+
+        function editarPerfilActual() {
+            let rawPerfil = localStorage.getItem("perfilActivo");
+            if (rawPerfil) {
+                let perfil = JSON.parse(rawPerfil);
+                let nuevoNombre = prompt("Ingresa el nuevo nombre para tu perfil:", perfil.nombre);
+                if (nuevoNombre && nuevoNombre.trim() !== "") {
+                    let nombreAntiguo = perfil.nombre;
+                    perfil.nombre = nuevoNombre.trim();
+                    localStorage.setItem("perfilActivo", JSON.stringify(perfil));
+
+                    document.getElementById("navName").innerText = perfil.nombre;
+                    document.getElementById("panelName").innerText = perfil.nombre;
+
+                    let perfiles = JSON.parse(localStorage.getItem("perfiles")) || [];
+                    let index = perfiles.findIndex(p => p.nombre === nombreAntiguo && p.avatar === perfil.avatar);
+                    if (index !== -1) {
+                        perfiles[index].nombre = perfil.nombre;
+                        localStorage.setItem("perfiles", JSON.stringify(perfiles));
+                    }
+
+                    // Si el comentario asume este nombre, actualizar la variable
+                    if (typeof currentName !== "undefined") {
+                        currentName = perfil.nombre;
+                    }
+                    alert("Perfil actualizado correctamente.");
+                }
+            }
+        }
+
+        function abrirConfiguracion() {
+            alert("Abriendo panel de configuración avanzada...");
+        }
+
+        // Lógica de UI básica para ver que funciona; el Backend deberá reemplazar esta función por un fetch(POST)
+        function logicaComentarioFront() {
+            let texto = document.getElementById("comentarioInput").value;
+            if (texto.trim() !== "") {
+                console.log("Comentario enviado a Backend:", texto.trim());
+
+                let template = document.getElementById("comment-template").content.cloneNode(true);
+                template.querySelector(".tmpl-avatar").src = currentAvatar;
+                template.querySelector(".tmpl-author").textContent = currentName;
+                template.querySelector(".tmpl-body").textContent = texto.trim();
+
+                let lista = document.getElementById("listaComentariosBD");
+                lista.insertBefore(template, lista.firstChild);
+
+                document.getElementById("comentarioInput").value = "";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

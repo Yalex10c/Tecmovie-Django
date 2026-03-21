@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 5 Películas | TECMOVIE</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #0f1014;
+            --card-bg: #1a1c23;
+            --primary-color: #f5c518;
+            /* Amarillo dorado para el TOP */
+            --primary-hover: #d4a710;
+            --text-main: #ffffff;
+            --text-sec: #a9a9b3;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: rgba(15, 16, 20, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 18px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo a {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #E50914;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-sec);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text-main);
+        }
+
+        .account-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .account-btn img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+        }
+
+        .account-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* CONTENIDO TOP */
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 50px auto;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 40px;
+            color: var(--text-main);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .page-title i {
+            color: var(--primary-color);
+        }
+
+        .top-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .top-item-card {
+            background: var(--card-bg);
+            padding: 25px 35px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .top-item-card:hover {
+            transform: scale(1.02);
+            border-color: var(--primary-color);
+            box-shadow: 0 15px 40px rgba(245, 197, 24, 0.15);
+        }
+
+        .top-item-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .rank {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--primary-color);
+            width: 50px;
+            text-align: center;
+            text-shadow: 0 4px 10px rgba(245, 197, 24, 0.3);
+        }
+
+        .movie-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .movie-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .movie-meta {
+            font-size: 14px;
+            color: var(--text-sec);
+        }
+
+        .rating {
+            background: rgba(245, 197, 24, 0.1);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 20px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(245, 197, 24, 0.2);
+        }
+
+        /* PANEL CUENTA */
+        .account-panel {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background: #12141a;
+            border-left: 1px solid var(--border-color);
+            color: white;
+            padding: 30px;
+            transition: right 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+            z-index: 1000;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .account-panel.active {
+            right: 0;
+        }
+
+        .account-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .account-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .close-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-panel:hover {
+            background: #E50914;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        .profile-header img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid #E50914;
+            margin-bottom: 15px;
+        }
+
+        .account-panel ul {
+            list-style: none;
+        }
+
+        .account-panel ul li {
+            padding: 15px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            font-size: 15px;
+            color: var(--text-sec);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            border-radius: 8px;
+        }
+
+        .account-panel ul li i {
+            font-size: 18px;
+            width: 25px;
+            text-align: center;
+        }
+
+        .account-panel ul li:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 15px;
+        }
+
+        .account-panel ul li.danger:hover {
+            color: #E50914;
+            background: rgba(229, 9, 20, 0.1);
+        }
+
+        @media(max-width:768px) {
+            .top-item-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+                padding: 30px 20px;
+            }
+
+            .top-item-left {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="logo"><a href="index2.htm">TECMOVIE</a></div>
+        <ul class="nav-links">
+            <li><a href="index2.html" class="active">Top</a></li>
+            <li><a href="index4.html">Nuevas</a></li>
+            <li>
+                <div class="account-btn" onclick="togglePanel()">
+                    <img id="navAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="User">
+                    <span id="navName">Mi Cuenta</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h1 class="page-title"><i class="fas fa-crown"></i> TOP PELÍCULAS GLOBLALES</h1>
+
+        <!-- CONTENEDOR PRINCIPAL PARA INYECCIÓN DESDE BD -->
+        <div class="top-list" id="top-movies-list">
+
+            <!-- Placeholder mientras carga Backend -->
+            <div class="top-item-card" onclick="window.location.href='index3.html?id=0'">
+                <div class="top-item-left">
+                    <span class="rank">#</span>
+                    <div class="movie-info">
+                        <span class="movie-name">[Película en el Top]</span>
+                        <span class="movie-meta">[Género] • [Año]</span>
+                    </div>
+                </div>
+                <div class="rating"><i class="fas fa-star"></i> 0.0</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- PANEL MI CUENTA -->
+    <div class="account-overlay" id="accountOverlay" onclick="togglePanel()"></div>
+    <div class="account-panel" id="accountPanel">
+        <div class="close-panel" onclick="togglePanel()"><i class="fas fa-times"></i></div>
+        <div class="profile-header">
+            <img id="panelAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="Perfil">
+            <h3 id="panelName">Usuario</h3>
+            <p style="color:var(--text-sec); font-size:13px; margin-top:5px;">usuario@tecmovie.com</p>
+        </div>
+        <ul>
+            <li><i class="fas fa-crown" style="color:#f5c518"></i> <strong>Suscripción:</strong> Premium Plus</li>
+            <li onclick="editarPerfilActual()"><i class="fas fa-user-edit"></i> Editar Perfil</li>
+            <li onclick="abrirConfiguracion()"><i class="fas fa-cog"></i> Configuración</li>
+            <li onclick="cambiarSesion()"><i class="fas fa-users"></i> Cambiar perfil</li>
+            <li class="danger" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</li>
+        </ul>
+    </div>
+
+    <!-- ================= TEMPLATES PARA BACKEND / JS ================= -->
+
+    <template id="top-card-template">
+        <div class="top-item-card" onclick="window.location.href='index3.html?id=__ID__'">
+            <div class="top-item-left">
+                <span class="rank tmpl-rank">1</span>
+                <div class="movie-info">
+                    <span class="movie-name tmpl-title">[TITULO]</span>
+                    <span class="movie-meta tmpl-meta">[GENERO] • [ANO]</span>
+                </div>
+            </div>
+            <div class="rating"><i class="fas fa-star"></i> <span class="tmpl-rating">0.0</span></div>
+        </div>
+    </template>
+
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            let rawPerfil = localStorage.getItem("perfilActivo");
+            if (rawPerfil) {
+                let perfil = JSON.parse(rawPerfil);
+                document.getElementById("navAvatar").src = perfil.avatar || "https://api.dicebear.com/7.x/bottts/svg?seed=Guest";
+                document.getElementById("navName").innerText = perfil.nombre || "Mi Cuenta";
+                document.getElementById("panelAvatar").src = perfil.avatar || "https://api.dicebear.com/7.x/bottts/svg?seed=Guest";
+                document.getElementById("panelName").innerText = perfil.nombre || "Usuario";
+            }
+
+            // El Backend aquí usaría fetch() a la BD para obtener el TOP.
+            // fetch('/api/movies/top').then(...).then(data => {
+            //    document.getElementById("top-movies-list").innerHTML = "";
+            //    data.forEach((movie, index) => {
+            //        let template = document.getElementById("top-card-template").content.cloneNode(true);
+            //        template.querySelector(".tmpl-rank").textContent = index + 1;
+            //        template.querySelector(".tmpl-title").textContent = movie.title;
+            //        ...
+            //        document.getElementById("top-movies-list").appendChild(template);
+            //    });
+            // })
+        });
+
+        function togglePanel() { document.getElementById("accountPanel").classList.toggle("active"); document.getElementById("accountOverlay").classList.toggle("active"); }
+        function cerrarSesion() { alert("Sesión cerrada correctamente"); localStorage.removeItem("perfilActivo"); window.location.href = "index.htm"; }
+        function cambiarSesion() { window.location.href = "indexC.html"; }
+
+        function editarPerfilActual() {
+            let rawPerfil = localStorage.getItem("perfilActivo");
+            if (rawPerfil) {
+                let perfil = JSON.parse(rawPerfil);
+                let nuevoNombre = prompt("Ingresa el nuevo nombre para tu perfil:", perfil.nombre);
+                if (nuevoNombre && nuevoNombre.trim() !== "") {
+                    let nombreAntiguo = perfil.nombre;
+                    perfil.nombre = nuevoNombre.trim();
+                    localStorage.setItem("perfilActivo", JSON.stringify(perfil));
+
+                    document.getElementById("navName").innerText = perfil.nombre;
+                    document.getElementById("panelName").innerText = perfil.nombre;
+
+                    let perfiles = JSON.parse(localStorage.getItem("perfiles")) || [];
+                    let index = perfiles.findIndex(p => p.nombre === nombreAntiguo && p.avatar === perfil.avatar);
+                    if (index !== -1) {
+                        perfiles[index].nombre = perfil.nombre;
+                        localStorage.setItem("perfiles", JSON.stringify(perfiles));
+                    }
+                    alert("Perfil actualizado correctamente.");
+                }
+            }
+        }
+
+        function abrirConfiguracion() {
+            alert("Abriendo panel de configuración avanzada...");
+        }
+    </script>
+
+</body>
+
+</html>

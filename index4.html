@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevas Películas | TECMOVIE</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #0f1014;
+            --card-bg: #1a1c23;
+            --primary-color: #00d2ff;
+            /* Color cian para Novedades */
+            --primary-hover: #00a8cc;
+            --text-main: #ffffff;
+            --text-sec: #a9a9b3;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: rgba(15, 16, 20, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 18px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo a {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #E50914;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-sec);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text-main);
+        }
+
+        .account-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .account-btn img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+        }
+
+        .account-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* MAIN LAYOUT */
+        .container {
+            width: 90%;
+            max-width: 1400px;
+            margin: 40px auto;
+            display: flex;
+            gap: 40px;
+        }
+
+        .main-content {
+            flex: 3;
+        }
+
+        /* SEARCH & FILTERS SECTION (Para Backend) */
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-title i {
+            color: var(--primary-color);
+        }
+
+        .filters-bar {
+            display: flex;
+            gap: 15px;
+            background: var(--card-bg);
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            color: var(--text-sec);
+        }
+
+        .search-box input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 10px 10px 10px 35px;
+            border-radius: 8px;
+            outline: none;
+            transition: 0.3s;
+            width: 200px;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-color);
+            width: 250px;
+        }
+
+        .filter-select {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 10px 35px 10px 15px;
+            border-radius: 8px;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 15px;
+        }
+
+        .filter-select:focus {
+            border-color: var(--primary-color);
+        }
+
+        .filter-select option {
+            background: var(--card-bg);
+        }
+
+        .btn-filter {
+            background: var(--primary-color);
+            color: #0f1014;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 800;
+            transition: 0.3s;
+        }
+
+        .btn-filter:hover {
+            background: var(--primary-hover);
+        }
+
+        /* MOVIE GRID */
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        .movie-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+            border-color: var(--primary-color);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 330px;
+            background: #2a2d36;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-sec);
+        }
+
+        .movie-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .movie-card:hover .movie-poster img {
+            transform: scale(1.08);
+        }
+
+        .badge-new {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--primary-color);
+            color: #0f1014;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 800;
+            border-radius: 4px;
+            z-index: 10;
+        }
+
+        .movie-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .movie-card:hover .movie-overlay {
+            opacity: 1;
+        }
+
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0f1014;
+            font-size: 20px;
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .movie-card:hover .play-btn {
+            transform: scale(1);
+        }
+
+        .movie-info {
+            padding: 15px;
+        }
+
+        .movie-card h3 {
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-size: 18px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .movie-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-sec);
+            font-size: 14px;
+        }
+
+        .rating {
+            color: #f5c518;
+            font-weight: 600;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .top-box {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .top-box h3 {
+            color: var(--text-main);
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid var(--primary-color);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .top-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .top-item:hover {
+            transform: translateX(5px);
+        }
+
+        .top-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .rank {
+            font-size: 20px;
+            color: var(--primary-color);
+            margin-right: 15px;
+            width: 25px;
+        }
+
+        .top-item-info {
+            flex: 1;
+        }
+
+        .top-item-info h4 {
+            font-size: 15px;
+            color: var(--text-main);
+        }
+
+        /* PANEL CUENTA */
+        .account-panel {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background: #12141a;
+            border-left: 1px solid var(--border-color);
+            color: white;
+            padding: 30px;
+            transition: right 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+            z-index: 1000;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .account-panel.active {
+            right: 0;
+        }
+
+        .account-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .account-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .close-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-panel:hover {
+            background: #E50914;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        .profile-header img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid #E50914;
+            margin-bottom: 15px;
+        }
+
+        .account-panel ul {
+            list-style: none;
+        }
+
+        .account-panel ul li {
+            padding: 15px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            font-size: 15px;
+            color: var(--text-sec);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            border-radius: 8px;
+        }
+
+        .account-panel ul li i {
+            font-size: 18px;
+            width: 25px;
+            text-align: center;
+        }
+
+        .account-panel ul li:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 15px;
+        }
+
+        .account-panel ul li.danger:hover {
+            color: #E50914;
+            background: rgba(229, 9, 20, 0.1);
+        }
+
+        @media(max-width:900px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="logo"><a href="index2.htm">TECMOVIE</a></div>
+        <ul class="nav-links">
+            <li><a href="index2.htm">Top</a></li>
+            <li><a href="index4.html" class="active">Nuevas</a></li>
+            <li>
+                <div class="account-btn" onclick="togglePanel()">
+                    <img id="navAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="User">
+                    <span id="navName">Mi Cuenta</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="container">
+
+        <div class="main-content">
+            <!-- HEADER DE BÚSQUEDA Y FILTROS PARA BACKEND -->
+            <div class="controls-header">
+                <h1 class="page-title"><i class="fas fa-fire"></i> Novedades y Estrenos</h1>
+                <div class="filters-bar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Buscar título...">
+                    </div>
+                    <select id="genreFilter" class="filter-select">
+                        <option value="estrenos">Solo Estrenos</option>
+                        <option value="proximamente">Próximamente</option>
+                        <option value="exclusivo">Exclusivo Plataforma</option>
+                    </select>
+                    <button class="btn-filter" id="btnFilter" onclick="filtrarPeliculas()">Filtrar</button>
+                </div>
+            </div>
+
+            <!-- CONTENEDOR PRINCIPAL PARA INYECCIÓN DESDE BD -->
+            <div class="movie-grid" id="new-movies-container">
+
+                <!-- Ejemplo Placeholder -->
+                <div class="movie-card" onclick="window.location.href='index3.html?id=0'">
+                    <div class="movie-poster">
+                        <span class="badge-new">ESTRENO</span>
+                        <i class="fas fa-film fa-3x" style="opacity:0.2;"></i>
+                        <div class="movie-overlay">
+                            <div class="play-btn"><i class="fas fa-play"></i></div>
+                        </div>
+                    </div>
+                    <div class="movie-info">
+                        <h3 class="movie-title-element">[Nueva Película Agregada]</h3>
+                        <div class="movie-meta">
+                            <span class="movie-genre-element">[Género] • [Año]</span>
+                            <span class="rating"><i class="fas fa-star"></i> 0.0</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- /new-movies-container -->
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="top-box" id="recomendaciones-container">
+                <h3><i class="fas fa-thumbs-up"></i> Recomendaciones Para Ti</h3>
+
+                <!-- Placeholder -->
+                <div class="top-item" onclick="window.location.href='index3.html?id=0'">
+                    <div class="rank"><i class="fas fa-angle-right"></i></div>
+                    <div class="top-item-info">
+                        <h4>[Nombre de la recomendación]</h4>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- PANEL MI CUENTA -->
+    <div class="account-overlay" id="accountOverlay" onclick="togglePanel()"></div>
+    <div class="account-panel" id="accountPanel">
+        <div class="close-panel" onclick="togglePanel()"><i class="fas fa-times"></i></div>
+        <div class="profile-header">
+            <img id="panelAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="Perfil">
+            <h3 id="panelName">Usuario</h3>
+            <p style="color:var(--text-sec); font-size:13px; margin-top:5px;">usuario@tecmovie.com</p>
+        </div>
+        <ul>
+            <li><i class="fas fa-crown" style="color:#f5c518"></i> <strong>Suscripción:</strong> Premium Plus</li>
+            <li onclick="editarPerfilActual()"><i class="fas fa-user-edit"></i> Editar Perfil</li>
+            <li onclick="abrirConfiguracion()"><i class="fas fa-cog"></i> Configuración</li>
+            <li onclick="cambiarSesion()"><i class="fas fa-users"></i> Cambiar perfil</li>
+            <li class="danger" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</li>
+        </ul>
+    </div>
+
+    <!-- ================= TEMPLATES PARA BACKEND / JS ================= -->
+
+    <template id="new-movie-card-template">
+        <div class="movie-card" onclick="window.location.href='index3.html?id=__ID__'">
+            <div class="movie-poster">
+                <span class="badge-new align-badge">ESTRENO</span>
+                <img src="" alt="Poster" class="tmpl-poster-img" style="display:none;"
+                    onerror="this.style.display='none'">
+                <div class="movie-overlay">
+                    <div class="play-btn"><i class="fas fa-play"></i></div>
+                </div>
+            </div>
+            <div class="movie-info">
+                <h3 class="tmpl-title">[TITULO]</h3>
+                <div class="movie-meta">
+                    <span class="tmpl-genre">[GENERO] • [AÑO]</span>
+                    <span class="rating"><i class="fas fa-star"></i> <span class="tmpl-rating">0.0</span></span>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="recommendation-item-template">
+        <div class="top-item" onclick="window.location.href='index3.html?id=__ID__'">
+            <div class="rank"><i class="fas fa-angle-right"></i></div>
+            <div class="top-item-info">
+                <h4 class="tmpl-title">[TITULO]</h4>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            let rawPerfil = localStorage.getItem("perfilActivo");
+            if (rawPerfil) {
+                let perfil = JSON.parse(rawPerfil);
+                document.getElementById("navAvatar").src = perfil.avatar || "https://api.dicebear.com/7.x/bottts/svg?seed=Guest";
+                document.getElementById("navName").innerText = perfil.nombre || "Mi Cuenta";
+                document.getElementById("panelAvatar").src = perfil.avatar || "https://api.dicebear.com/7.x/bottts/svg?seed=Guest";
+                document.getElementById("panelName").innerText = perfil.nombre || "Usuario";
+            }
+        });
+
+        function togglePanel() { document.getElementById("accountPanel").classList.toggle("active"); document.getElementById("accountOverlay").classList.toggle("active"); }
+        function cerrarSesion() { alert("Sesión cerrada correctamente"); localStorage.removeItem("perfilActivo"); window.location.href = "index.htm"; }
+        function cambiarSesion() { window.location.href = "indexC.html"; }
+
+        function editarPerfilActual() {
+            let rawPerfil = localStorage.getItem("perfilActivo");
+            if (rawPerfil) {
+                let perfil = JSON.parse(rawPerfil);
+                let nuevoNombre = prompt("Ingresa el nuevo nombre para tu perfil:", perfil.nombre);
+                if (nuevoNombre && nuevoNombre.trim() !== "") {
+                    let nombreAntiguo = perfil.nombre;
+                    perfil.nombre = nuevoNombre.trim();
+                    localStorage.setItem("perfilActivo", JSON.stringify(perfil));
+
+                    document.getElementById("navName").innerText = perfil.nombre;
+                    document.getElementById("panelName").innerText = perfil.nombre;
+
+                    let perfiles = JSON.parse(localStorage.getItem("perfiles")) || [];
+                    let index = perfiles.findIndex(p => p.nombre === nombreAntiguo && p.avatar === perfil.avatar);
+                    if (index !== -1) {
+                        perfiles[index].nombre = perfil.nombre;
+                        localStorage.setItem("perfiles", JSON.stringify(perfiles));
+                    }
+                    alert("Perfil actualizado correctamente.");
+                }
+            }
+        }
+
+        function abrirConfiguracion() {
+            alert("Abriendo panel de configuración avanzada...");
+        }
+
+        function filtrarPeliculas() {
+            const text = document.getElementById("searchInput").value;
+            const select = document.getElementById("genreFilter").value;
+            console.log("Backend => Buscar Nuevas:", text, "Filtro:", select);
+        }
+    </script>
+
+</body>
+
+</html>

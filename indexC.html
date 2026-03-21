@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfiles | TECMOVIE</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #0f1014;
+            --card-bg: #1a1c23;
+            --primary-color: #E50914;
+            /* Rojo Netflix */
+            --text-main: #ffffff;
+            --text-sec: #a9a9b3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(15, 16, 20, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px 8%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+
+        .logo {
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            margin-top: 140px;
+            font-size: 40px;
+            font-weight: 600;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        #contenedor {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-top: 50px;
+            padding: 0 5%;
+        }
+
+        .perfil-wrapper {
+            animation: zoomIn 0.5s ease backwards;
+        }
+
+        /* Delay staggered animation for profiles */
+        .perfil-wrapper:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .perfil-wrapper:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .perfil-wrapper:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .perfil-wrapper:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .perfil {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .perfil:hover {
+            transform: scale(1.08);
+        }
+
+        .icono {
+            width: 150px;
+            height: 150px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #1a1c23 0%, #2f3441 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: var(--text-sec);
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .icono img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .perfil:hover .icono {
+            border-color: var(--text-main);
+            color: var(--text-main);
+        }
+
+        .perfil p {
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-sec);
+            transition: color 0.3s;
+        }
+
+        .perfil:hover p {
+            color: var(--text-main);
+        }
+
+        .btn-group {
+            margin-top: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            gap: 10px;
+        }
+
+        .perfil-wrapper:hover .btn-group {
+            opacity: 1;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-editar {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+        }
+
+        .btn-editar:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-borrar {
+            background: rgba(229, 9, 20, 0.2);
+            color: var(--primary-color);
+        }
+
+        .btn-borrar:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-agregar {
+            margin-top: 60px;
+            padding: 14px 30px;
+            font-size: 18px;
+            background: transparent;
+            border: 1px solid var(--text-sec);
+            color: var(--text-sec);
+            border-radius: 8px;
+        }
+
+        .btn-agregar:hover {
+            border-color: var(--text-main);
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media(max-width: 768px) {
+            .icono {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- BARRA SUPERIOR -->
+    <div class="navbar">
+        <div class="logo">TECMOVIE</div>
+    </div>
+
+    <h1>¿Quién está viendo ahora?</h1>
+
+    <div id="contenedor"></div>
+
+    <div>
+        <button class="btn-agregar" onclick="agregarPerfil()">
+            <i class="fas fa-plus-circle"></i> Agregar Perfil
+        </button>
+    </div>
+
+    <script>
+        // Usaremos avatares generados por defecto
+        const avatars = [
+            "https://api.dicebear.com/7.x/bottts/svg?seed=Felix",
+            "https://api.dicebear.com/7.x/bottts/svg?seed=Aneka",
+            "https://api.dicebear.com/7.x/bottts/svg?seed=Jasper",
+            "https://api.dicebear.com/7.x/bottts/svg?seed=Luna"
+        ];
+
+        let perfiles = JSON.parse(localStorage.getItem("perfiles")) || [];
+
+        // Si está vacío, agregar perfil por defecto
+        if (perfiles.length === 0) {
+            perfiles.push({ nombre: "Invitado", avatar: avatars[0] });
+            localStorage.setItem("perfiles", JSON.stringify(perfiles));
+        }
+
+        function agregarPerfil() {
+            if (perfiles.length >= 4) {
+                alert("Solo puedes tener máximo 4 perfiles en Premium Plus.");
+                return;
+            }
+
+            let nombre = prompt("Nombre del nuevo perfil:");
+            if (nombre && nombre.trim() !== "") {
+                let avatarIndex = perfiles.length % avatars.length;
+                perfiles.push({ nombre: nombre.trim(), avatar: avatars[avatarIndex] });
+                localStorage.setItem("perfiles", JSON.stringify(perfiles));
+                mostrarPerfiles();
+            }
+        }
+
+        function mostrarPerfiles() {
+            let cont = document.getElementById("contenedor");
+            cont.innerHTML = "";
+
+            perfiles.forEach((p, i) => {
+                let avatarImg = p.avatar ? `<img src="${p.avatar}" alt="${p.nombre}">` : '<i class="fas fa-user"></i>';
+
+                cont.innerHTML += `
+        <div class="perfil-wrapper">
+            <div class="perfil" onclick="entrar(${i})">
+                <div class="icono">${avatarImg}</div>
+                <p>${p.nombre}</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn-editar" onclick="editar(${i})"><i class="fas fa-pen"></i></button>
+                <button class="btn-borrar" onclick="borrar(${i})"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>
+        `;
+            });
+        }
+
+        function editar(i) {
+            let nuevo = prompt("Nuevo nombre para el perfil:", perfiles[i].nombre);
+            if (nuevo && nuevo.trim() !== "") {
+                perfiles[i].nombre = nuevo.trim();
+                localStorage.setItem("perfiles", JSON.stringify(perfiles));
+                mostrarPerfiles();
+            }
+        }
+
+        function borrar(i) {
+            let confirmar = confirm("¿Seguro que quieres eliminar el perfil de " + perfiles[i].nombre + "?");
+            if (confirmar) {
+                perfiles.splice(i, 1);
+                localStorage.setItem("perfiles", JSON.stringify(perfiles));
+                mostrarPerfiles();
+            }
+        }
+
+        function entrar(i) {
+            localStorage.setItem("perfilActivo", JSON.stringify(perfiles[i]));
+            // Efecto visual antes de redireccionar
+            document.body.style.opacity = "0";
+            document.body.style.transition = "opacity 0.5s";
+            setTimeout(() => {
+                window.location.href = "index2.htm";
+            }, 400);
+        }
+
+        mostrarPerfiles();
+    </script>
+
+</body>
+
+</html>

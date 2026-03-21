@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suscripción | TECMOVIE</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #0f1014;
+            --card-bg: #1a1c23;
+            --primary-color: #E50914;
+            /* Rojo Netflix */
+            --primary-hover: #b80710;
+            --text-main: #ffffff;
+            --text-sec: #a9a9b3;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at top, #1a1c23 0%, var(--bg-color) 60%);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: rgba(15, 16, 20, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo h2 {
+            color: var(--primary-color);
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .login-btn {
+            background: var(--primary-color);
+            color: var(--text-main);
+            padding: 10px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .login-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 80px 10%;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .camera-logo {
+            font-size: 60px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(229, 9, 20, 0.5));
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+
+        .hero h1 span {
+            color: var(--primary-color);
+        }
+
+        .hero p {
+            color: var(--text-sec);
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        /* Plans */
+        .plans-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .plan-card {
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            width: 320px;
+            text-align: left;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 30px rgba(229, 9, 20, 0.15);
+        }
+
+        /* Glow effect behind card on hover */
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+
+        .plan-card:hover::before {
+            opacity: 1;
+        }
+
+        .plan-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .plan-price {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+        }
+
+        .plan-price span {
+            font-size: 16px;
+            color: var(--text-sec);
+            font-weight: 400;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 35px;
+        }
+
+        .plan-features li {
+            margin-bottom: 16px;
+            color: var(--text-sec);
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subscribe-btn {
+            background: rgba(229, 9, 20, 0.1);
+            color: var(--primary-color);
+            padding: 15px;
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            width: 100%;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .plan-card:hover .subscribe-btn {
+            background: var(--primary-color);
+            color: var(--text-main);
+        }
+
+        /* Modals (Glassmorphism) */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-content {
+            background: rgba(26, 28, 35, 0.85);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 420px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.4s ease-out;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 25px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            cursor: pointer;
+            color: var(--text-sec);
+            font-size: 24px;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: var(--primary-color);
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-main);
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .pay-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .pay-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .secondary-btn {
+            margin-top: 15px;
+            background: transparent;
+            color: var(--text-sec);
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media(max-width: 768px) {
+            .hero h1 {
+                font-size: 40px;
+            }
+
+            .plans-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="logo">
+            <h2>TECMOVIE</h2>
+        </div>
+        <button class="login-btn" id="btnLogin">Iniciar sesión</button>
+    </div>
+
+    <section class="hero">
+        <div class="camera-logo">
+            <i class="fas fa-film"></i>
+        </div>
+        <h1>Acceso exclusivo <span>sin límites.</span></h1>
+        <p>Disfruta de las mejores reseñas, rankings en tiempo real y comunidad cinéfila.</p>
+
+        <div class="plans-container">
+
+            <div class="plan-card">
+                <div class="plan-title">Plan Básico</div>
+                <div class="plan-price">$79 <span>MXN/mes</span></div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-video"></i> Acceso a reseñas normales</li>
+                    <li><i class="fas fa-star"></i> Rankings generales</li>
+                    <li><i class="fas fa-ban"></i> Sin anuncios</li>
+                    <li><i class="fas fa-mobile-screen"></i> 1 dispositivo</li>
+                </ul>
+                <button class="subscribe-btn" onclick="irPago()">Elegir Básico</button>
+            </div>
+
+            <div class="plan-card" style="border-color: var(--primary-color); transform: scale(1.03);">
+                <div class="plan-title" style="color: var(--primary-color);">Plan Premium</div>
+                <div class="plan-price">$99 <span>MXN/mes</span></div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-crown"></i> Rankings exclusivos</li>
+                    <li><i class="fas fa-star-half-stroke"></i> Reseñas premium</li>
+                    <li><i class="fas fa-fire"></i> Acceso anticipado</li>
+                    <li><i class="fas fa-ban"></i> Sin anuncios</li>
+                    <li><i class="fas fa-mobile-screen"></i> 2 dispositivos</li>
+                </ul>
+                <button class="subscribe-btn" onclick="irPago()"
+                    style="background:var(--primary-color); color:white;">Elegir Premium</button>
+            </div>
+
+            <div class="plan-card">
+                <div class="plan-title">Plan Premium Plus</div>
+                <div class="plan-price">$129 <span>MXN/mes</span></div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-infinity"></i> Todo lo del Premium</li>
+                    <li><i class="fas fa-users"></i> Hasta 4 cuentas</li>
+                    <li><i class="fas fa-ban"></i> Sin anuncios</li>
+                    <li><i class="fas fa-laptop"></i> Todos los dispositivos</li>
+                </ul>
+                <button class="subscribe-btn" onclick="irPago()">Elegir Plus</button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- LOGIN -->
+    <div class="modal" id="modalLogin">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal('modalLogin')">&times;</span>
+            <h2>Iniciar sesión</h2>
+            <input type="email" placeholder="Correo electrónico">
+            <input type="password" placeholder="Contraseña">
+            <button class="pay-btn" onclick="window.location.href='indexC.html'">Continuar</button>
+            <button class="secondary-btn" onclick="abrirCambio()">Cambiar contraseña</button>
+        </div>
+    </div>
+
+    <!-- CAMBIAR CONTRASEÑA -->
+    <div class="modal" id="modalCambio">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal('modalCambio')">&times;</span>
+            <h2>Restablecer acceso</h2>
+            <input type="email" placeholder="Correo electrónico" id="correoCambio">
+            <input type="password" placeholder="Nueva contraseña" id="nuevaPass">
+            <input type="password" placeholder="Confirmar contraseña" id="confirmNuevaPass">
+            <button class="pay-btn" onclick="guardarNuevaPass()">Guardar cambios</button>
+        </div>
+    </div>
+
+    <!-- PAGO -->
+    <div class="modal" id="modalPago">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal('modalPago')">&times;</span>
+            <h2>Finalizar compra</h2>
+
+            <input type="text" placeholder="Nombre completo" id="nombrePago">
+            <input type="email" placeholder="Correo electrónico" id="correoPago">
+
+            <input type="password" placeholder="Crear contraseña" id="passPago">
+            <input type="password" placeholder="Confirmar contraseña" id="confirmPassPago">
+
+            <div style="position:relative;">
+                <input type="text" placeholder="Número de tarjeta" id="tarjetaPago" maxlength="19">
+                <i class="far fa-credit-card"
+                    style="position:absolute; right:15px; top:15px; color:var(--text-sec);"></i>
+            </div>
+            <small id="bancoDetectado"
+                style="display:block;margin-top:-10px;margin-bottom:15px;font-weight:600;color:var(--primary-color);"></small>
+
+            <input type="text" placeholder="CVV" id="cvvPago" maxlength="4">
+
+            <button class="pay-btn" onclick="finalizar()">Pagar suscripción</button>
+        </div>
+    </div>
+
+    <script>
+        function irPago() {
+            document.getElementById("modalLogin").style.display = "none";
+            document.getElementById("modalPago").style.display = "flex";
+        }
+
+        function abrirCambio() {
+            document.getElementById("modalLogin").style.display = "none";
+            document.getElementById("modalCambio").style.display = "flex";
+        }
+
+        function guardarNuevaPass() {
+            let nueva = document.getElementById("nuevaPass").value;
+            let confirm = document.getElementById("confirmNuevaPass").value;
+
+            if (nueva === "" || confirm === "") {
+                alert("Completa todos los campos.");
+                return;
+            }
+            if (nueva !== confirm) {
+                alert("Las contraseñas no coinciden.");
+                return;
+            }
+            if (nueva.length < 6) {
+                alert("La contraseña debe tener al menos 6 caracteres.");
+                return;
+            }
+
+            alert("Contraseña cambiada correctamente");
+            window.location.href = "indexC.html";
+        }
+
+        function finalizar() {
+            let nombre = document.getElementById("nombrePago").value;
+            let correo = document.getElementById("correoPago").value;
+            let pass = document.getElementById("passPago").value;
+            let confirmPass = document.getElementById("confirmPassPago").value;
+            let tarjeta = document.getElementById("tarjetaPago").value;
+            let cvv = document.getElementById("cvvPago").value;
+
+            if (nombre === "" || correo === "" || pass === "" || confirmPass === "" || tarjeta === "" || cvv === "") {
+                alert("Por favor completa todos los campos.");
+                return;
+            }
+            if (pass !== confirmPass) {
+                alert("Las contraseñas no coinciden.");
+                return;
+            }
+            if (pass.length < 6) {
+                alert("La contraseña debe tener al menos 6 caracteres.");
+                return;
+            }
+            if (tarjeta.length < 16) {
+                alert("La tarjeta debe tener al menos 16 dígitos.");
+                return;
+            }
+            if (cvv.length < 3) {
+                alert("El CVV debe tener al menos 3 dígitos.");
+                return;
+            }
+
+            window.location.href = "indexC.html";
+        }
+
+        function cerrarModal(id) {
+            document.getElementById(id).style.display = "none";
+        }
+
+        // Formato de tarjeta y detección
+        document.getElementById("tarjetaPago").addEventListener("input", function (e) {
+            let value = this.value.replace(/\D/g, '');
+            let formattedValue = '';
+
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) formattedValue += ' ';
+                formattedValue += value[i];
+            }
+            this.value = formattedValue;
+
+            let number = value;
+            let banco = "Banco desconocido";
+
+            if (number.length >= 6) {
+                let bin = number.substring(0, 6);
+                if (bin === "415231" || bin === "450799" || bin === "455527") { banco = "BBVA"; }
+                else if (bin === "557910" || bin === "557907") { banco = "Santander"; }
+                else if (bin === "491566") { banco = "BanCoppel"; }
+                else if (bin === "520416" || bin === "400744") { banco = "Citibanamex"; }
+            }
+
+            if (number.length > 5) {
+                document.getElementById("bancoDetectado").innerText = "🏦 " + banco;
+            } else {
+                document.getElementById("bancoDetectado").innerText = "";
+            }
+        });
+
+        document.getElementById("btnLogin").onclick = () => {
+            document.getElementById("modalLogin").style.display = "flex";
+        };
+
+        window.onclick = function (e) {
+            if (e.target.classList.contains("modal")) {
+                e.target.style.display = "none";
+            }
+        };
+    </script>
+
+</body>
+
+</html>
