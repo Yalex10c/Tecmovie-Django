@@ -514,10 +514,10 @@
 <body>
 
     <div class="navbar">
-        <a href="index2.htm" class="logo">TECMOVIE</a>
+        <a href="/" class="logo">TECMOVIE</a>
         <ul class="nav-links">
-            <li><a href="index2.htm">Top</a></li>
-            <li><a href="index4.html">Nuevas</a></li>
+            <li><a href="/">Top</a></li>
+            <li><a href="/nuevas/">Nuevas</a></li>
             <li>
                 <div class="account-btn" onclick="togglePanel()">
                     <img id="navAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="User">
@@ -535,27 +535,27 @@
         <div class="movie-detail-card">
 
             <div class="poster">
-                <!-- Imagen inyectable; tiene placeholder con FontAwesome si falla -->
-                <img src="" alt="Poster" id="moviePosterImg" style="display:none;"
-                    onerror="this.style.display='none'; document.getElementById('posterInitialStatus').style.display='block';">
-                <i class="fas fa-video" id="posterInitialStatus"></i>
+                <!-- Imagen real proveniente de la DB, con fallback estético -->
+                {% if pelicula.imagen_url %}
+                <img src="{{ pelicula.imagen_url }}" alt="Poster" id="moviePosterImg">
+                {% else %}
+                <img src="https://api.dicebear.com/7.x/identicon/svg?seed={{ pelicula.nombre|urlencode }}" alt="Poster" id="moviePosterImg">
+                {% endif %}
             </div>
 
             <div class="movie-info">
 
-                <h1 id="movieTitleH1">[Título de la Película Generada]</h1>
+                <h1 id="movieTitleH1">{{ pelicula.nombre }}</h1>
 
                 <div class="meta" id="movieMetaDiv">
-                    <!-- Se inyectarán los géneros y duración en formato span -->
-                    <span>[Género]</span>
-                    <span>[Subgénero]</span>
-                    <span>[Año]</span>
-                    <span><i class="far fa-clock"></i> [Duración]</span>
+                    <span>{{ pelicula.genero.nombre|default:"Sin Género" }}</span>
+                    <span>Película</span>
+                    <span>{{ pelicula.anio }}</span>
+                    <span><i class="fas fa-video"></i> {{ pelicula.director.nombre|default:"Director Desconocido" }}</span>
                 </div>
 
                 <p class="synopsis" id="movieSynopsisP">
-                    [Esta es una descripción o sinopsis general lista para que el backend integre el texto respectivo de
-                    la película desde la tabla SQL/MongoDB u otro medio.]
+                    {{ pelicula.resumen|default:"Aún no se ha añadido un resumen para esta película." }}
                 </p>
 
                 <div class="rating-box">
@@ -571,14 +571,41 @@
                             <i class="fas fa-star"></i>
                             <i class="far fa-star"></i>
                         </div>
-                        <div style="color:var(--text-sec); font-size:13px;" id="movieReviewsCountDiv">Revisar valoración
+                        <div style="color:var(--text-sec); font-size:13px;" id="movieReviewsCountDiv">
+                            {% if request.user.is_authenticated %}
+                                {% if can_interact %}
+                                <form method="POST" action="{% url 'interactions:rate_movie' pelicula.id_pelicula %}">
+                                    {% csrf_token %}
+                                    <select name="puntuacion" onchange="this.form.submit()" style="background:transparent; color:var(--text-sec); border:1px solid var(--border-color); border-radius:4px; margin-top:5px;">
+                                        <option value="">Tu nota...</option>
+                                        <option value="5">5 Estrellas</option>
+                                        <option value="4">4 Estrellas</option>
+                                        <option value="3">3 Estrellas</option>
+                                        <option value="2">2 Estrellas</option>
+                                        <option value="1">1 Estrella</option>
+                                    </select>
+                                </form>
+                                {% endif %}
+                            {% else %}
+                            Inicia sesión para valorar
+                            {% endif %}
                         </div>
                     </div>
                 </div>
 
                 <div class="btn-actions">
                     <a href="#" class="btn" id="btnPlayMovie"><i class="fas fa-play"></i> Reproducir / Tráiler</a>
-                    <a href="index2.htm" class="btn btn-secondary" onclick="window.history.back(); return false;"><i
+                    
+                    {% if request.user.is_authenticated and can_interact %}
+                    <a href="{% url 'interactions:toggle_favorite' pelicula.id_pelicula %}" class="btn btn-secondary" title="Favorito">
+                        <i class="fas fa-heart" {% if is_favorite %}style="color:red;"{% endif %}></i> {% if is_favorite %}Favorito{% else %}Guardar{% endif %}
+                    </a>
+                    <a href="{% url 'interactions:toggle_watchlist' pelicula.id_pelicula %}" class="btn btn-secondary" title="Watchlist">
+                        <i class="fas fa-bookmark" {% if is_in_watchlist %}style="color:yellow;"{% endif %}></i> {% if is_in_watchlist %}Pendiente{% else %}Ver luego{% endif %}
+                    </a>
+                    {% endif %}
+                    
+                    <a href="/" class="btn btn-secondary" onclick="window.history.back(); return false;"><i
                             class="fas fa-arrow-left"></i> Volver</a>
                 </div>
 
@@ -589,25 +616,50 @@
         <div class="comment-section">
             <h2><i class="fas fa-comments"></i> Comunidad</h2>
 
-            <!-- Formulario para que el backend intercepte el Submit -->
-            <div class="comment-input-area">
-                <img id="commentAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="Tú">
-                <textarea id="comentarioInput"
-                    placeholder="¿Qué te pareció la película? Escribe tu reseña..."></textarea>
-                <button class="btn-send" id="btnEnviarComentario" onclick="logicaComentarioFront()">Publicar</button>
+            <!-- Formulario real enviado al backend de Django -->
+            {% if request.user.is_authenticated %}
+                {% if can_interact %}
+                <form method="POST" class="comment-input-area">
+                    {% csrf_token %}
+                    <img id="commentAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed={{ request.user.username }}" alt="Tú">
+                    <textarea name="comentario" id="comentarioInput" required 
+                        placeholder="¿Qué te pareció la película? Escribe tu reseña..."></textarea>
+                    <button type="submit" class="btn-send" id="btnEnviarComentario">Publicar</button>
+                </form>
+                {% else %}
+                <div class="review-lock-message" style="background:#222; padding:20px; border-radius:10px; text-align:center; margin-bottom:20px;">
+                    <i class="fas fa-lock" style="font-size:32px; color:var(--text-sec); margin-bottom:15px;"></i>
+                    <p style="color:var(--text-main); margin-bottom:15px; font-size:16px;">Tu suscripción <strong>Gratuita</strong> te permite explorar. Mejora a un plan de pago para valorar, guardar favoritos y dejar comentarios.</p>
+                    <a href="{% url 'users:planes' %}" class="btn" style="display:inline-block;"><i class="fas fa-arrow-up"></i> Ver Planes</a>
+                </div>
+                {% endif %}
+            {% else %}
+            <div style="margin-bottom: 30px; color: var(--text-sec);">
+                <i class="fas fa-info-circle"></i> Inicia sesión o regístrate para dejar tus comentarios.
             </div>
+            {% endif %}
 
-            <!-- Contenedor general que recibirá los comentarios de la BD -->
             <div class="comments-list" id="listaComentariosBD">
 
-                <!-- Ejemplo de comentario vacío si no hay BD conectada yet -->
+                {% for resena in resenas %}
+                <div class="comment">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed={{ resena.usuario.username }}" alt="User">
+                    <div class="comment-content">
+                        <h4>{{ resena.usuario.username }}</h4>
+                        <!-- Se asume que calificación está en la BD, si no, se muestra estrellas crudas -->
+                        <div style="color:#f5c518; margin-bottom: 5px;"><i class="fas fa-star"></i> Puntuada en la BD</div>
+                        <p>{{ resena.comentario }}</p>
+                    </div>
+                </div>
+                {% empty %}
                 <div class="comment" style="opacity:0.5;">
                     <img src="https://api.dicebear.com/7.x/bottts/svg?seed=System" alt="Sys">
                     <div class="comment-content">
-                        <h4>Sistema Automático</h4>
-                        <p>Esperando conexión con el Backend para cargar los comentarios reales de los usuarios...</p>
+                        <h4>Sistema</h4>
+                        <p>No hay reseñas en la base de datos para esta película. ¡Sé el primero en comentar desde el Panel o Backend!</p>
                     </div>
                 </div>
+                {% endfor %}
 
             </div>
         </div>
@@ -619,15 +671,14 @@
     <div class="account-panel" id="accountPanel">
         <div class="close-panel" onclick="togglePanel()"><i class="fas fa-times"></i></div>
         <div class="profile-header">
-            <img id="panelAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="Perfil">
-            <h3 id="panelName">Usuario</h3>
-            <p style="color:var(--text-sec); font-size:13px; margin-top:5px;">usuario@tecmovie.com</p>
+            <img id="panelAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed={{ request.user.username|urlencode }}" alt="Perfil">
+            <h3 id="panelName">{{ request.user.first_name|default:request.user.username }}</h3>
+            <p style="color:var(--text-sec); font-size:13px; margin-top:5px;">{{ request.user.email }}</p>
         </div>
         <ul>
-            <li><i class="fas fa-crown" style="color:#f5c518"></i> <strong>Suscripción:</strong> Premium Plus</li>
+            <li><i class="fas fa-crown" style="color:#f5c518"></i> <strong>Suscripción:</strong> {{ request.user.current_plan_name }}</li>
             <li onclick="editarPerfilActual()"><i class="fas fa-user-edit"></i> Editar Perfil</li>
             <li onclick="abrirConfiguracion()"><i class="fas fa-cog"></i> Configuración</li>
-            <li onclick="cambiarSesion()"><i class="fas fa-users"></i> Cambiar perfil</li>
             <li class="danger" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</li>
         </ul>
     </div>
@@ -653,17 +704,7 @@
         let currentName = "Usuario Activo";
 
         window.addEventListener("DOMContentLoaded", () => {
-            let rawPerfil = localStorage.getItem("perfilActivo");
-            if (rawPerfil) {
-                let perfil = JSON.parse(rawPerfil);
-                currentAvatar = perfil.avatar || currentAvatar;
-                currentName = perfil.nombre || currentName;
-                document.getElementById("navAvatar").src = currentAvatar;
-                document.getElementById("navName").innerText = perfil.nombre || "Mi Cuenta";
-                document.getElementById("panelAvatar").src = currentAvatar;
-                document.getElementById("panelName").innerText = currentName;
-                document.getElementById("commentAvatar").src = currentAvatar;
-            }
+
 
             // Aquí el Backend usaría el URLSearchParams para obtener ?id= de la película
             // const urlParams = new URLSearchParams(window.location.search);
@@ -672,59 +713,20 @@
         });
 
         function togglePanel() { document.getElementById("accountPanel").classList.toggle("active"); document.getElementById("accountOverlay").classList.toggle("active"); }
-        function cerrarSesion() { alert("Sesión cerrada correctamente"); localStorage.removeItem("perfilActivo"); window.location.href = "index.htm"; }
-        function cambiarSesion() { window.location.href = "indexC.html"; }
+        function cerrarSesion() { 
+            localStorage.removeItem("perfilActivo"); 
+            window.location.href = "{% url 'users:logout' %}"; 
+        }
+        function cambiarSesion() { window.location.href = "/perfiles/"; }
 
         function editarPerfilActual() {
-            let rawPerfil = localStorage.getItem("perfilActivo");
-            if (rawPerfil) {
-                let perfil = JSON.parse(rawPerfil);
-                let nuevoNombre = prompt("Ingresa el nuevo nombre para tu perfil:", perfil.nombre);
-                if (nuevoNombre && nuevoNombre.trim() !== "") {
-                    let nombreAntiguo = perfil.nombre;
-                    perfil.nombre = nuevoNombre.trim();
-                    localStorage.setItem("perfilActivo", JSON.stringify(perfil));
-
-                    document.getElementById("navName").innerText = perfil.nombre;
-                    document.getElementById("panelName").innerText = perfil.nombre;
-
-                    let perfiles = JSON.parse(localStorage.getItem("perfiles")) || [];
-                    let index = perfiles.findIndex(p => p.nombre === nombreAntiguo && p.avatar === perfil.avatar);
-                    if (index !== -1) {
-                        perfiles[index].nombre = perfil.nombre;
-                        localStorage.setItem("perfiles", JSON.stringify(perfiles));
-                    }
-
-                    // Si el comentario asume este nombre, actualizar la variable
-                    if (typeof currentName !== "undefined") {
-                        currentName = perfil.nombre;
-                    }
-                    alert("Perfil actualizado correctamente.");
-                }
-            }
+            alert("Para editar perfil, visita el panel de administrador django de momento.");
         }
 
         function abrirConfiguracion() {
             alert("Abriendo panel de configuración avanzada...");
         }
 
-        // Lógica de UI básica para ver que funciona; el Backend deberá reemplazar esta función por un fetch(POST)
-        function logicaComentarioFront() {
-            let texto = document.getElementById("comentarioInput").value;
-            if (texto.trim() !== "") {
-                console.log("Comentario enviado a Backend:", texto.trim());
-
-                let template = document.getElementById("comment-template").content.cloneNode(true);
-                template.querySelector(".tmpl-avatar").src = currentAvatar;
-                template.querySelector(".tmpl-author").textContent = currentName;
-                template.querySelector(".tmpl-body").textContent = texto.trim();
-
-                let lista = document.getElementById("listaComentariosBD");
-                lista.insertBefore(template, lista.firstChild);
-
-                document.getElementById("comentarioInput").value = "";
-            }
-        }
     </script>
 
 </body>

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="page-title"><i class="fas fa-crown"></i> TOP PELÍCULAS GLOBLALES</h1>
+
+        <div class="top-list">
+
+            {% for movie in movies %}
+            <div class="top-item-card" onclick="window.location.href='/pelicula/{{ movie.id_pelicula }}/'">
+                <div class="top-item-left">
+                    <span class="rank">{{ forloop.counter }}</span>
+                    <!-- Ajuste visual de la miniatura usando imagen_url original -->
+                    {% if movie.imagen_url %}
+                    <img src="{{ movie.imagen_url }}" style="width:50px; height:70px; object-fit:cover; border-radius:6px; margin:0 15px;">
+                    {% else %}
+                    <img src="https://api.dicebear.com/7.x/identicon/svg?seed={{ movie.nombre|urlencode }}" style="width:50px; height:70px; object-fit:cover; border-radius:6px; margin:0 15px;">
+                    {% endif %}
+                    
+                    <div class="movie-info">
+                        <span class="movie-name">{{ movie.nombre }}</span>
+                        <span class="movie-meta">{{ movie.genero.nombre|default:"Sin Género" }} • {{ movie.anio }}</span>
+                    </div>
+                </div>
+                <div class="rating"><i class="fas fa-star"></i> {{ movie.rating|default:"0.0" }}</div>
+            </div>
+            {% empty %}
+            <div class="top-item-card">
+                <div class="top-item-left">
+                    <span class="rank">-</span>
+                    <div class="movie-info">
+                        <span class="movie-name">No hay películas registradas</span>
+                        <span class="movie-meta">Utiliza MySQL para agregar datos</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+{% endblock %}

@@ -506,10 +506,10 @@
 <body>
 
     <div class="navbar">
-        <div class="logo"><a href="index2.htm">TECMOVIE</a></div>
+        <div class="logo"><a href="/">TECMOVIE</a></div>
         <ul class="nav-links">
-            <li><a href="index2.html" class="active">Top</a></li>
-            <li><a href="index4.html">Nuevas</a></li>
+            <li><a href="/" class="active">Top</a></li>
+            <li><a href="/nuevas/">Nuevas</a></li>
             <li>
                 <div class="account-btn" onclick="togglePanel()">
                     <img id="navAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="User">
@@ -545,7 +545,7 @@
             <div class="movie-grid" id="movies-container">
 
                 <!-- Ejemplo de Placeholder mientras carga BD -->
-                <div class="movie-card" onclick="window.location.href='index3.html?id=0'">
+                <div class="movie-card" onclick="window.location.href='/pelicula/0/'">
                     <div class="movie-poster">
                         <i class="fas fa-film fa-3x" style="opacity:0.2;"></i>
                         <div class="movie-overlay">
@@ -570,7 +570,7 @@
                 <h3><i class="fas fa-chart-line"></i> Top Reseñas</h3>
 
                 <!-- Ejemplo Placeholder Top Item -->
-                <div class="top-item" onclick="window.location.href='index3.html?id=0'">
+                <div class="top-item" onclick="window.location.href='/pelicula/0/'">
                     <div class="rank">#</div>
                     <div class="top-item-info">
                         <h4>[Nombre de Top Película]</h4>
@@ -606,7 +606,7 @@
 
     <!-- Template para generar tarjetas de películas -->
     <template id="movie-card-template">
-        <div class="movie-card" onclick="window.location.href='index3.html?id=__ID__'">
+        <div class="movie-card" onclick="window.location.href='/pelicula/__ID__/'">
             <div class="movie-poster">
                 <img src="" alt="Poster" class="tmpl-poster-img" style="display:none;"
                     onerror="this.style.display='none'">
@@ -626,7 +626,7 @@
 
     <!-- Template para generar ítems del Sidebar (Top) -->
     <template id="sidebar-item-template">
-        <div class="top-item" onclick="window.location.href='index3.html?id=__ID__'">
+        <div class="top-item" onclick="window.location.href='/pelicula/__ID__/'">
             <div class="rank tmpl-rank">1</div>
             <div class="top-item-info">
                 <h4 class="tmpl-title">[NOMBRE]</h4>
@@ -657,10 +657,10 @@
         function cerrarSesion() {
             alert("Sesión cerrada correctamente");
             localStorage.removeItem("perfilActivo");
-            window.location.href = "index.htm";
+            window.location.href = "/login/";
         }
 
-        function cambiarSesion() { window.location.href = "indexC.html"; }
+        function cambiarSesion() { window.location.href = "/perfiles/"; }
 
         // Función placeholder donde el backend conectará su búsqueda a BD
         function filtrarPeliculas() {

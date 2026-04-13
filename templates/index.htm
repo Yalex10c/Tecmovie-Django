@@ -397,16 +397,32 @@
             </div>
 
         </div>
+
+        <div style="margin-top: 50px; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+            <p style="color:var(--text-sec); font-size:16px;">¿Aún no estás convencido? Explora el catálogo primero.</p>
+            <button class="login-btn" style="padding: 16px 40px; font-size: 18px; border-radius: 8px; border: 2px solid var(--primary-color); background: transparent; color: white;" onclick="irPago()">Crear Cuenta Gratuita</button>
+        </div>
     </section>
 
     <!-- LOGIN -->
-    <div class="modal" id="modalLogin">
+    <div class="modal" id="modalLogin" {% if show_login_modal %}style="display:flex;"{% endif %}>
         <div class="modal-content">
             <span class="close" onclick="cerrarModal('modalLogin')">&times;</span>
             <h2>Iniciar sesión</h2>
-            <input type="email" placeholder="Correo electrónico">
-            <input type="password" placeholder="Contraseña">
-            <button class="pay-btn" onclick="window.location.href='indexC.html'">Continuar</button>
+            
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="login">
+                <input type="email" name="correo" placeholder="Correo electrónico" required>
+                <input type="password" name="contrasena" placeholder="Contraseña" required>
+                
+                {% if error_login %}
+                <p style="color:var(--primary-color); font-size:14px; margin-bottom:10px;">{{ error_login }}</p>
+                {% endif %}
+                
+                <button type="submit" class="pay-btn">Continuar</button>
+            </form>
+            
             <button class="secondary-btn" onclick="abrirCambio()">Cambiar contraseña</button>
         </div>
     </div>
@@ -423,29 +439,27 @@
         </div>
     </div>
 
-    <!-- PAGO -->
-    <div class="modal" id="modalPago">
+    <!-- PAGO / REGISTRO -->
+    <div class="modal" id="modalPago" {% if show_register_modal %}style="display:flex;"{% endif %}>
         <div class="modal-content">
             <span class="close" onclick="cerrarModal('modalPago')">&times;</span>
-            <h2>Finalizar compra</h2>
+            <h2>Registro (Plan Gratuito)</h2>
+            <p style="text-align:center; color:var(--text-sec); margin-bottom:20px; font-size:14px;">Crea tu cuenta gratuita. Podrás mejorar a Premium desde adentro si lo deseas.</p>
 
-            <input type="text" placeholder="Nombre completo" id="nombrePago">
-            <input type="email" placeholder="Correo electrónico" id="correoPago">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="register">
 
-            <input type="password" placeholder="Crear contraseña" id="passPago">
-            <input type="password" placeholder="Confirmar contraseña" id="confirmPassPago">
+                <input type="text" name="nombre" placeholder="Nombre completo" id="nombrePago" required>
+                <input type="email" name="correo" placeholder="Correo electrónico" id="correoPago" required>
+                <input type="password" name="contrasena" placeholder="Crear contraseña" id="passPago" required minlength="6">
 
-            <div style="position:relative;">
-                <input type="text" placeholder="Número de tarjeta" id="tarjetaPago" maxlength="19">
-                <i class="far fa-credit-card"
-                    style="position:absolute; right:15px; top:15px; color:var(--text-sec);"></i>
-            </div>
-            <small id="bancoDetectado"
-                style="display:block;margin-top:-10px;margin-bottom:15px;font-weight:600;color:var(--primary-color);"></small>
+                {% if error_register %}
+                <p style="color:var(--primary-color); font-size:14px; margin-bottom:10px;">{{ error_register }}</p>
+                {% endif %}
 
-            <input type="text" placeholder="CVV" id="cvvPago" maxlength="4">
-
-            <button class="pay-btn" onclick="finalizar()">Pagar suscripción</button>
+                <button type="submit" class="pay-btn">Crear cuenta gratis</button>
+            </form>
         </div>
     </div>
 
@@ -478,73 +492,12 @@
             }
 
             alert("Contraseña cambiada correctamente");
-            window.location.href = "indexC.html";
-        }
-
-        function finalizar() {
-            let nombre = document.getElementById("nombrePago").value;
-            let correo = document.getElementById("correoPago").value;
-            let pass = document.getElementById("passPago").value;
-            let confirmPass = document.getElementById("confirmPassPago").value;
-            let tarjeta = document.getElementById("tarjetaPago").value;
-            let cvv = document.getElementById("cvvPago").value;
-
-            if (nombre === "" || correo === "" || pass === "" || confirmPass === "" || tarjeta === "" || cvv === "") {
-                alert("Por favor completa todos los campos.");
-                return;
-            }
-            if (pass !== confirmPass) {
-                alert("Las contraseñas no coinciden.");
-                return;
-            }
-            if (pass.length < 6) {
-                alert("La contraseña debe tener al menos 6 caracteres.");
-                return;
-            }
-            if (tarjeta.length < 16) {
-                alert("La tarjeta debe tener al menos 16 dígitos.");
-                return;
-            }
-            if (cvv.length < 3) {
-                alert("El CVV debe tener al menos 3 dígitos.");
-                return;
-            }
-
-            window.location.href = "indexC.html";
+            window.location.href = "/perfiles/";
         }
 
         function cerrarModal(id) {
             document.getElementById(id).style.display = "none";
         }
-
-        // Formato de tarjeta y detección
-        document.getElementById("tarjetaPago").addEventListener("input", function (e) {
-            let value = this.value.replace(/\D/g, '');
-            let formattedValue = '';
-
-            for (let i = 0; i < value.length; i++) {
-                if (i > 0 && i % 4 === 0) formattedValue += ' ';
-                formattedValue += value[i];
-            }
-            this.value = formattedValue;
-
-            let number = value;
-            let banco = "Banco desconocido";
-
-            if (number.length >= 6) {
-                let bin = number.substring(0, 6);
-                if (bin === "415231" || bin === "450799" || bin === "455527") { banco = "BBVA"; }
-                else if (bin === "557910" || bin === "557907") { banco = "Santander"; }
-                else if (bin === "491566") { banco = "BanCoppel"; }
-                else if (bin === "520416" || bin === "400744") { banco = "Citibanamex"; }
-            }
-
-            if (number.length > 5) {
-                document.getElementById("bancoDetectado").innerText = "🏦 " + banco;
-            } else {
-                document.getElementById("bancoDetectado").innerText = "";
-            }
-        });
 
         document.getElementById("btnLogin").onclick = () => {
             document.getElementById("modalLogin").style.display = "flex";

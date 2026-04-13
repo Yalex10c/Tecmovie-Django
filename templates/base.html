@@ -321,10 +321,10 @@
 <body>
 
     <div class="navbar">
-        <div class="logo"><a href="index2.htm">TECMOVIE</a></div>
+        <div class="logo"><a href="/">TECMOVIE</a></div>
         <ul class="nav-links">
-            <li><a href="index2.html" class="active">Top</a></li>
-            <li><a href="index4.html">Nuevas</a></li>
+            <li><a href="/" class="active">Top</a></li>
+            <li><a href="/nuevas/">Nuevas</a></li>
             <li>
                 <div class="account-btn" onclick="togglePanel()">
                     <img id="navAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="User">
@@ -334,41 +334,22 @@
         </ul>
     </div>
 
-    <div class="container">
-        <h1 class="page-title"><i class="fas fa-crown"></i> TOP PELÍCULAS GLOBLALES</h1>
-
-        <!-- CONTENEDOR PRINCIPAL PARA INYECCIÓN DESDE BD -->
-        <div class="top-list" id="top-movies-list">
-
-            <!-- Placeholder mientras carga Backend -->
-            <div class="top-item-card" onclick="window.location.href='index3.html?id=0'">
-                <div class="top-item-left">
-                    <span class="rank">#</span>
-                    <div class="movie-info">
-                        <span class="movie-name">[Película en el Top]</span>
-                        <span class="movie-meta">[Género] • [Año]</span>
-                    </div>
-                </div>
-                <div class="rating"><i class="fas fa-star"></i> 0.0</div>
-            </div>
-
-        </div>
-    </div>
+    {% block content %}
+    {% endblock %}
 
     <!-- PANEL MI CUENTA -->
     <div class="account-overlay" id="accountOverlay" onclick="togglePanel()"></div>
     <div class="account-panel" id="accountPanel">
         <div class="close-panel" onclick="togglePanel()"><i class="fas fa-times"></i></div>
         <div class="profile-header">
-            <img id="panelAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="Perfil">
-            <h3 id="panelName">Usuario</h3>
-            <p style="color:var(--text-sec); font-size:13px; margin-top:5px;">usuario@tecmovie.com</p>
+            <img id="panelAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed={{ request.user.username|urlencode }}" alt="Perfil">
+            <h3 id="panelName">{{ request.user.first_name|default:request.user.username }}</h3>
+            <p style="color:var(--text-sec); font-size:13px; margin-top:5px;">{{ request.user.email }}</p>
         </div>
         <ul>
-            <li><i class="fas fa-crown" style="color:#f5c518"></i> <strong>Suscripción:</strong> Premium Plus</li>
+            <li><i class="fas fa-crown" style="color:#f5c518"></i> <strong>Suscripción:</strong> {{ request.user.current_plan_name }}</li>
             <li onclick="editarPerfilActual()"><i class="fas fa-user-edit"></i> Editar Perfil</li>
             <li onclick="abrirConfiguracion()"><i class="fas fa-cog"></i> Configuración</li>
-            <li onclick="cambiarSesion()"><i class="fas fa-users"></i> Cambiar perfil</li>
             <li class="danger" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</li>
         </ul>
     </div>
@@ -376,7 +357,7 @@
     <!-- ================= TEMPLATES PARA BACKEND / JS ================= -->
 
     <template id="top-card-template">
-        <div class="top-item-card" onclick="window.location.href='index3.html?id=__ID__'">
+        <div class="top-item-card" onclick="window.location.href='/pelicula/__ID__/'">
             <div class="top-item-left">
                 <span class="rank tmpl-rank">1</span>
                 <div class="movie-info">
@@ -390,14 +371,7 @@
 
     <script>
         window.addEventListener("DOMContentLoaded", () => {
-            let rawPerfil = localStorage.getItem("perfilActivo");
-            if (rawPerfil) {
-                let perfil = JSON.parse(rawPerfil);
-                document.getElementById("navAvatar").src = perfil.avatar || "https://api.dicebear.com/7.x/bottts/svg?seed=Guest";
-                document.getElementById("navName").innerText = perfil.nombre || "Mi Cuenta";
-                document.getElementById("panelAvatar").src = perfil.avatar || "https://api.dicebear.com/7.x/bottts/svg?seed=Guest";
-                document.getElementById("panelName").innerText = perfil.nombre || "Usuario";
-            }
+            // El backend renderiza el navAvatar, navName, panelAvatar y panelName. No necesitamos sobreescribirlo aquí.
 
             // El Backend aquí usaría fetch() a la BD para obtener el TOP.
             // fetch('/api/movies/top').then(...).then(data => {
@@ -413,31 +387,14 @@
         });
 
         function togglePanel() { document.getElementById("accountPanel").classList.toggle("active"); document.getElementById("accountOverlay").classList.toggle("active"); }
-        function cerrarSesion() { alert("Sesión cerrada correctamente"); localStorage.removeItem("perfilActivo"); window.location.href = "index.htm"; }
-        function cambiarSesion() { window.location.href = "indexC.html"; }
+        function cerrarSesion() { 
+            localStorage.removeItem("perfilActivo"); 
+            window.location.href = "{% url 'users:logout' %}"; 
+        }
+        function cambiarSesion() { window.location.href = "/perfiles/"; }
 
         function editarPerfilActual() {
-            let rawPerfil = localStorage.getItem("perfilActivo");
-            if (rawPerfil) {
-                let perfil = JSON.parse(rawPerfil);
-                let nuevoNombre = prompt("Ingresa el nuevo nombre para tu perfil:", perfil.nombre);
-                if (nuevoNombre && nuevoNombre.trim() !== "") {
-                    let nombreAntiguo = perfil.nombre;
-                    perfil.nombre = nuevoNombre.trim();
-                    localStorage.setItem("perfilActivo", JSON.stringify(perfil));
-
-                    document.getElementById("navName").innerText = perfil.nombre;
-                    document.getElementById("panelName").innerText = perfil.nombre;
-
-                    let perfiles = JSON.parse(localStorage.getItem("perfiles")) || [];
-                    let index = perfiles.findIndex(p => p.nombre === nombreAntiguo && p.avatar === perfil.avatar);
-                    if (index !== -1) {
-                        perfiles[index].nombre = perfil.nombre;
-                        localStorage.setItem("perfiles", JSON.stringify(perfiles));
-                    }
-                    alert("Perfil actualizado correctamente.");
-                }
-            }
+            alert("Para editar perfil, visita el panel de administrador django de momento.");
         }
 
         function abrirConfiguracion() {
