@@ -1,12 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+
 class Usuario(AbstractUser):
     id_usuario = models.AutoField(primary_key=True)
-    # Heredamos AbstractUser para ganar seguridad nativa y el Panel Admin.
-    # Nombramos la tabla "usuarios" para ajustarnos a la jerga de tus compañeros (Database-first style),
-    # pero Django se adueñará de ella agregando campos seguros (is_staff, password hashing etc).
-    # Solo requiere que elimines la vieja tabla 'usuarios' si colisiona para que Django genere la Super Segura.
+    email = models.EmailField(unique=True)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
+
     @property
     def can_interact(self):
         from django.utils import timezone
@@ -21,7 +23,11 @@ class Usuario(AbstractUser):
     def current_plan_name(self):
         from django.utils import timezone
         today = timezone.now().date()
-        suscripcion = self.suscripcion_set.filter(fecha_inicio__lte=today, fecha_fin__gte=today).order_by('-plan__precio').first()
+        suscripcion = self.suscripcion_set.filter(
+            fecha_inicio__lte=today,
+            fecha_fin__gte=today
+        ).order_by('-plan__precio').first()
+
         if suscripcion:
             return suscripcion.plan.nombre
         return "Gratuita"
@@ -30,7 +36,11 @@ class Usuario(AbstractUser):
     def current_plan_id(self):
         from django.utils import timezone
         today = timezone.now().date()
-        suscripcion = self.suscripcion_set.filter(fecha_inicio__lte=today, fecha_fin__gte=today).order_by('-plan__precio').first()
+        suscripcion = self.suscripcion_set.filter(
+            fecha_inicio__lte=today,
+            fecha_fin__gte=today
+        ).order_by('-plan__precio').first()
+
         if suscripcion:
             return suscripcion.plan.id_plan
         return None
@@ -38,6 +48,10 @@ class Usuario(AbstractUser):
     class Meta:
         db_table = 'usuarios'
         managed = True
+
+    def __str__(self):
+        return self.email
+
 
 class Plan(models.Model):
     id_plan = models.AutoField(primary_key=True)
@@ -48,6 +62,10 @@ class Plan(models.Model):
     class Meta:
         db_table = 'planes'
         managed = False
+
+    def __str__(self):
+        return self.nombre
+
 
 class Suscripcion(models.Model):
     id_suscripcion = models.AutoField(primary_key=True)
@@ -60,6 +78,7 @@ class Suscripcion(models.Model):
         db_table = 'suscripciones'
         managed = False
 
+
 class MetodoPago(models.Model):
     id_pago = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
@@ -71,3 +90,26 @@ class MetodoPago(models.Model):
     class Meta:
         db_table = 'metodo_pago'
         managed = False
+
+class UsuarioGeneroPreferencia(models.Model):
+    id = models.AutoField(primary_key=True)
+    usuario = models.ForeignKey(
+        Usuario,
+        models.DO_NOTHING,
+        db_column='id_usuario',
+        related_name='preferencias_genero'
+    )
+    genero = models.ForeignKey(
+        'movies.Genero',
+        models.DO_NOTHING,
+        db_column='id_genero',
+        related_name='usuarios_preferidos'
+    )
+
+    class Meta:
+        db_table = 'usuario_genero_preferencia'
+        managed = False
+        unique_together = (('usuario', 'genero'),)
+
+    def __str__(self):
+        return f"{self.usuario.email} - {self.genero.nombre}"

@@ -4,24 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top 5 Películas | TECMOVIE</title>
-    <!-- Google Fonts -->
+    <title>TECMOVIE</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
         :root {
             --bg-color: #0f1014;
-            --card-bg: #1a1c23;
-            --primary-color: #f5c518;
-            /* Amarillo dorado para el TOP */
-            --primary-hover: #d4a710;
+            --surface-1: #111827;
+            --surface-2: #1a1c23;
+            --surface-3: #202534;
+            --primary-color: #e50914;
+            --primary-hover: #c40812;
+            --accent-color: #f5c518;
             --text-main: #ffffff;
             --text-sec: #a9a9b3;
-            --border-color: rgba(255, 255, 255, 0.1);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --shadow-soft: 0 12px 28px rgba(0, 0, 0, 0.22);
+            --radius-lg: 18px;
+            --radius-xl: 24px;
         }
 
         * {
@@ -31,37 +36,57 @@
             font-family: 'Inter', sans-serif;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             background: var(--bg-color);
             color: var(--text-main);
             overflow-x: hidden;
         }
 
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        .container {
+            width: min(1400px, 94%);
+            margin: 32px auto;
+        }
+
         /* NAVBAR */
         .navbar {
-            background: rgba(15, 16, 20, 0.8);
-            backdrop-filter: blur(12px);
+            background: rgba(15, 16, 20, 0.82);
+            backdrop-filter: blur(14px);
             border-bottom: 1px solid var(--border-color);
-            padding: 18px 5%;
+            padding: 16px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
 
         .logo a {
             font-size: 26px;
-            font-weight: 800;
+            font-weight: 900;
             letter-spacing: 1px;
-            color: #E50914;
-            text-decoration: none;
+            color: var(--primary-color);
         }
 
         .nav-links {
             display: flex;
-            gap: 30px;
+            gap: 24px;
             list-style: none;
             align-items: center;
         }
@@ -69,8 +94,9 @@
         .nav-links a {
             color: var(--text-sec);
             text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
+            font-weight: 700;
+            font-size: 14px;
+            transition: color 0.2s ease, opacity 0.2s ease;
         }
 
         .nav-links a:hover,
@@ -79,35 +105,160 @@
         }
 
         .account-btn {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             color: var(--text-main);
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 8px 14px;
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
+            font-weight: 700;
+            transition: all 0.25s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .account-btn img {
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
+            flex-shrink: 0;
         }
 
         .account-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.14);
+            transform: translateY(-1px);
         }
 
-        /* CONTENIDO TOP */
-        .container {
-            width: 90%;
-            max-width: 900px;
-            margin: 50px auto;
+        /* PANEL DE CUENTA */
+        .account-panel {
+            position: fixed;
+            top: 0;
+            right: -360px;
+            width: 360px;
+            max-width: 92vw;
+            height: 100vh;
+            background: #12141a;
+            border-left: 1px solid var(--border-color);
+            color: white;
+            padding: 28px 22px;
+            transition: right 0.35s ease;
+            z-index: 1001;
+            box-shadow: -12px 0 32px rgba(0, 0, 0, 0.4);
+            overflow-y: auto;
         }
 
+        .account-panel.active {
+            right: 0;
+        }
+
+        .account-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(2px);
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .account-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .close-panel {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: rgba(255, 255, 255, 0.08);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .close-panel:hover {
+            background: var(--primary-color);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-top: 16px;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .profile-header img {
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            margin-bottom: 14px;
+        }
+
+        .profile-header h3 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .profile-header p {
+            color: var(--text-sec);
+            font-size: 13px;
+        }
+
+        .account-panel ul {
+            list-style: none;
+        }
+
+        .account-panel ul li {
+            padding: 14px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            font-size: 15px;
+            color: var(--text-sec);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.25s ease;
+            border-radius: 10px;
+        }
+
+        .account-panel ul li i {
+            font-size: 18px;
+            width: 22px;
+            text-align: center;
+        }
+
+        .account-panel ul li:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 16px;
+        }
+
+        .account-panel ul li.danger:hover {
+            color: #ff5b6e;
+            background: rgba(229, 9, 20, 0.1);
+        }
+
+        .menu-section-title {
+            color: #7e8796;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin: 20px 0 10px;
+            padding: 0 4px;
+        }
+
+        /* UTILIDADES */
         .page-title {
             font-size: 36px;
             font-weight: 800;
@@ -121,198 +272,183 @@
         }
 
         .page-title i {
-            color: var(--primary-color);
+            color: var(--accent-color);
         }
 
-        .top-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .top-item-card {
-            background: var(--card-bg);
-            padding: 25px 35px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            display: flex;
-            justify-content: space-between;
+        .primary-link-btn {
+            display: inline-flex;
             align-items: center;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
+            gap: 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .primary-link-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 900px) {
+            .navbar {
+                padding: 14px 4%;
+            }
+
+            .nav-links {
+                gap: 16px;
+            }
+
+            .account-btn span {
+                display: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .logo a {
+                font-size: 22px;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .nav-links a {
+                font-size: 13px;
+            }
+
+            .container {
+                width: min(96%, 1400px);
+                margin: 22px auto;
+            }
+        }
+
+        .mi-mundo-entry {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(90deg, rgba(229, 9, 20, 0.12), rgba(110, 80, 255, 0.10), rgba(0, 180, 255, 0.10));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .mi-mundo-entry::before {
+            content: "";
+            position: absolute;
+            inset: -20%;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(255, 0, 120, 0.22), transparent 28%),
+                radial-gradient(circle at 50% 40%, rgba(0, 200, 255, 0.20), transparent 30%),
+                radial-gradient(circle at 80% 60%, rgba(130, 100, 255, 0.22), transparent 28%);
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            filter: blur(18px);
+            pointer-events: none;
+        }
+
+        .mi-mundo-entry::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 120%;
+            height: 100%;
+            background: linear-gradient(120deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.06) 35%,
+                    rgba(255, 255, 255, 0.16) 50%,
+                    transparent 65%);
+            pointer-events: none;
+        }
+
+        .mi-mundo-entry:hover::before {
+            opacity: 1;
+            animation: lavaGlow 3.2s ease-in-out infinite alternate;
+        }
+
+        .mi-mundo-entry:hover::after {
+            animation: shimmerLoop 1.4s linear infinite;
+        }
+
+        .mi-mundo-entry:hover {
+            box-shadow: 0 0 26px rgba(130, 110, 255, 0.18);
+        }
+
+        @keyframes shimmerLoop {
+            0% {
+                left: -120%;
+            }
+
+            100% {
+                left: 120%;
+            }
+        }
+
+        @keyframes lavaGlow {
+            0% {
+                transform: translateX(-6%) translateY(0) scale(1);
+                filter: blur(18px);
+            }
+
+            50% {
+                transform: translateX(4%) translateY(-3%) scale(1.06);
+                filter: blur(22px);
+            }
+
+            100% {
+                transform: translateX(8%) translateY(2%) scale(1.02);
+                filter: blur(19px);
+            }
+        }
+
+        .mi-mundo-page {
+            animation: pageReveal 0.9s ease;
+        }
+
+        .mi-mundo-hero {
             position: relative;
             overflow: hidden;
         }
 
-        .top-item-card:hover {
-            transform: scale(1.02);
-            border-color: var(--primary-color);
-            box-shadow: 0 15px 40px rgba(245, 197, 24, 0.15);
-        }
-
-        .top-item-left {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-
-        .rank {
-            font-size: 48px;
-            font-weight: 800;
-            color: var(--primary-color);
-            width: 50px;
-            text-align: center;
-            text-shadow: 0 4px 10px rgba(245, 197, 24, 0.3);
-        }
-
-        .movie-info {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .movie-name {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        .movie-meta {
-            font-size: 14px;
-            color: var(--text-sec);
-        }
-
-        .rating {
-            background: rgba(245, 197, 24, 0.1);
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 20px;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid rgba(245, 197, 24, 0.2);
-        }
-
-        /* PANEL CUENTA */
-        .account-panel {
-            position: fixed;
-            top: 0;
-            right: -350px;
-            width: 350px;
-            height: 100vh;
-            background: #12141a;
-            border-left: 1px solid var(--border-color);
-            color: white;
-            padding: 30px;
-            transition: right 0.4s cubic-bezier(0.86, 0, 0.07, 1);
-            z-index: 1000;
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .account-panel.active {
-            right: 0;
-        }
-
-        .account-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(2px);
-            z-index: 999;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .account-overlay.active {
-            display: block;
-            opacity: 1;
-        }
-
-        .close-panel {
+        .mi-mundo-hero::before {
+            content: "";
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.3s;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.06) 35%,
+                    rgba(255, 255, 255, 0.14) 50%,
+                    rgba(255, 255, 255, 0) 65%);
+            transform: translateX(-120%);
+            animation: shimmerEntrance 1.2s ease 0.15s forwards;
         }
 
-        .close-panel:hover {
-            background: #E50914;
+        .mi-mundo-hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(255, 0, 120, 0.10), transparent 35%),
+                radial-gradient(circle at 80% 30%, rgba(0, 180, 255, 0.10), transparent 35%),
+                radial-gradient(circle at 50% 80%, rgba(130, 100, 255, 0.10), transparent 35%);
+            pointer-events: none;
         }
 
-        .profile-header {
-            text-align: center;
-            margin-bottom: 30px;
-            margin-top: 20px;
+        @keyframes shimmerEntrance {
+            to {
+                transform: translateX(120%);
+            }
         }
 
-        .profile-header img {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            border: 3px solid #E50914;
-            margin-bottom: 15px;
-        }
-
-        .account-panel ul {
-            list-style: none;
-        }
-
-        .account-panel ul li {
-            padding: 15px 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            cursor: pointer;
-            font-size: 15px;
-            color: var(--text-sec);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: all 0.3s;
-            border-radius: 8px;
-        }
-
-        .account-panel ul li i {
-            font-size: 18px;
-            width: 25px;
-            text-align: center;
-        }
-
-        .account-panel ul li:hover {
-            color: var(--text-main);
-            background: rgba(255, 255, 255, 0.05);
-            padding-left: 15px;
-        }
-
-        .account-panel ul li.danger:hover {
-            color: #E50914;
-            background: rgba(229, 9, 20, 0.1);
-        }
-
-        @media(max-width:768px) {
-            .top-item-card {
-                flex-direction: column;
-                text-align: center;
-                gap: 20px;
-                padding: 30px 20px;
+        @keyframes pageReveal {
+            0% {
+                opacity: 0;
+                transform: translateY(18px) scale(0.985);
             }
 
-            .top-item-left {
-                flex-direction: column;
-                gap: 15px;
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
             }
         }
     </style>
@@ -321,84 +457,113 @@
 <body>
 
     <div class="navbar">
-        <div class="logo"><a href="/">TECMOVIE</a></div>
+        <div class="logo">
+            <a href="{% url 'movies:home' %}">TECMOVIE</a>
+        </div>
+
         <ul class="nav-links">
-            <li><a href="/" class="active">Top</a></li>
-            <li><a href="/nuevas/">Nuevas</a></li>
+            <li>
+                <a href="{% url 'movies:home' %}" class="{% if request.path == '/' %}active{% endif %}">Top</a>
+            </li>
+            <li>
+                <a href="{% url 'movies:nuevas' %}"
+                    class="{% if '/nuevas/' in request.path %}active{% endif %}">Nuevas</a>
+            </li>
+
+            {% if request.user.is_authenticated %}
+            <li>
+                <div class="account-btn" onclick="togglePanel()">
+                    <img id="navAvatar"
+                        src="https://api.dicebear.com/7.x/bottts/svg?seed={{ request.user.username|urlencode }}"
+                        alt="User">
+                    <span id="navName">{{ request.user.first_name|default:"Mi Cuenta" }}</span>
+                </div>
+            </li>
+            {% else %}
             <li>
                 <div class="account-btn" onclick="togglePanel()">
                     <img id="navAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="User">
                     <span id="navName">Mi Cuenta</span>
                 </div>
             </li>
+            {% endif %}
         </ul>
     </div>
 
     {% block content %}
     {% endblock %}
 
-    <!-- PANEL MI CUENTA -->
     <div class="account-overlay" id="accountOverlay" onclick="togglePanel()"></div>
+
     <div class="account-panel" id="accountPanel">
-        <div class="close-panel" onclick="togglePanel()"><i class="fas fa-times"></i></div>
-        <div class="profile-header">
-            <img id="panelAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed={{ request.user.username|urlencode }}" alt="Perfil">
-            <h3 id="panelName">{{ request.user.first_name|default:request.user.username }}</h3>
-            <p style="color:var(--text-sec); font-size:13px; margin-top:5px;">{{ request.user.email }}</p>
+        <div class="close-panel" onclick="togglePanel()">
+            <i class="fas fa-times"></i>
         </div>
+
+        <div class="profile-header">
+            {% if request.user.is_authenticated %}
+            <img id="panelAvatar"
+                src="https://api.dicebear.com/7.x/bottts/svg?seed={{ request.user.username|urlencode }}" alt="Perfil">
+            <h3 id="panelName">{{ request.user.first_name|default:request.user.username }}</h3>
+            <p>{{ request.user.email }}</p>
+            {% else %}
+            <img id="panelAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="Perfil">
+            <h3 id="panelName">Invitado</h3>
+            <p>Sin iniciar sesión</p>
+            {% endif %}
+        </div>
+
         <ul>
-            <li><i class="fas fa-crown" style="color:#f5c518"></i> <strong>Suscripción:</strong> {{ request.user.current_plan_name }}</li>
-            <li onclick="editarPerfilActual()"><i class="fas fa-user-edit"></i> Editar Perfil</li>
-            <li onclick="abrirConfiguracion()"><i class="fas fa-cog"></i> Configuración</li>
-            <li class="danger" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</li>
+            {% if request.user.is_authenticated %}
+            <li>
+                <i class="fas fa-crown" style="color:#f5c518"></i>
+                <strong>Suscripción:</strong> {{ request.user.current_plan_name }}
+            </li>
+
+            <div class="menu-section-title">Personalizado</div>
+
+            <li class="mi-mundo-entry" onclick="window.location.href='{% url 'users:mi_mundo' %}'">
+                <i class="fas fa-star"></i> Mi Mundo
+            </li>
+            <li onclick="window.location.href='{% url 'users:recomendaciones' %}'">
+                <i class="fas fa-film"></i> Recomendaciones
+            </li>
+
+            <div class="menu-section-title">Cuenta</div>
+
+            <li onclick="editarPerfilActual()">
+                <i class="fas fa-user-edit"></i> Editar Perfil
+            </li>
+            <li onclick="abrirConfiguracion()">
+                <i class="fas fa-cog"></i> Configuración
+            </li>
+            <li class="danger" onclick="cerrarSesion()">
+                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+            </li>
+            {% else %}
+            <li onclick="window.location.href='{% url 'users:login' %}'">
+                <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+            </li>
+            {% endif %}
         </ul>
     </div>
 
-    <!-- ================= TEMPLATES PARA BACKEND / JS ================= -->
-
-    <template id="top-card-template">
-        <div class="top-item-card" onclick="window.location.href='/pelicula/__ID__/'">
-            <div class="top-item-left">
-                <span class="rank tmpl-rank">1</span>
-                <div class="movie-info">
-                    <span class="movie-name tmpl-title">[TITULO]</span>
-                    <span class="movie-meta tmpl-meta">[GENERO] • [ANO]</span>
-                </div>
-            </div>
-            <div class="rating"><i class="fas fa-star"></i> <span class="tmpl-rating">0.0</span></div>
-        </div>
-    </template>
-
     <script>
-        window.addEventListener("DOMContentLoaded", () => {
-            // El backend renderiza el navAvatar, navName, panelAvatar y panelName. No necesitamos sobreescribirlo aquí.
-
-            // El Backend aquí usaría fetch() a la BD para obtener el TOP.
-            // fetch('/api/movies/top').then(...).then(data => {
-            //    document.getElementById("top-movies-list").innerHTML = "";
-            //    data.forEach((movie, index) => {
-            //        let template = document.getElementById("top-card-template").content.cloneNode(true);
-            //        template.querySelector(".tmpl-rank").textContent = index + 1;
-            //        template.querySelector(".tmpl-title").textContent = movie.title;
-            //        ...
-            //        document.getElementById("top-movies-list").appendChild(template);
-            //    });
-            // })
-        });
-
-        function togglePanel() { document.getElementById("accountPanel").classList.toggle("active"); document.getElementById("accountOverlay").classList.toggle("active"); }
-        function cerrarSesion() { 
-            localStorage.removeItem("perfilActivo"); 
-            window.location.href = "{% url 'users:logout' %}"; 
+        function togglePanel() {
+            document.getElementById("accountPanel").classList.toggle("active");
+            document.getElementById("accountOverlay").classList.toggle("active");
         }
-        function cambiarSesion() { window.location.href = "/perfiles/"; }
+
+        function cerrarSesion() {
+            window.location.href = "{% url 'users:logout' %}";
+        }
 
         function editarPerfilActual() {
-            alert("Para editar perfil, visita el panel de administrador django de momento.");
+            alert("Más adelante podrás editar tu perfil desde un panel propio.");
         }
 
         function abrirConfiguracion() {
-            alert("Abriendo panel de configuración avanzada...");
+            alert("Aquí luego puedes agregar configuración visual, privacidad o preferencias extra.");
         }
     </script>
 

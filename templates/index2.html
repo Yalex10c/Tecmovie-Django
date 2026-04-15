@@ -1,41 +1,404 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="container">
-        <h1 class="page-title"><i class="fas fa-crown"></i> TOP PELÍCULAS GLOBLALES</h1>
+<style>
+    .portal-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 2.3fr) minmax(380px, 1fr);
+        gap: 30px;
+        align-items: start;
+        padding: 20px 0 30px;
+    }
 
-        <div class="top-list">
+    .catalog-section,
+    .sidebar-section {
+        background: transparent;
+    }
 
-            {% for movie in movies %}
-            <div class="top-item-card" onclick="window.location.href='/pelicula/{{ movie.id_pelicula }}/'">
-                <div class="top-item-left">
-                    <span class="rank">{{ forloop.counter }}</span>
-                    <!-- Ajuste visual de la miniatura usando imagen_url original -->
+    .section-title {
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        color: #fff;
+    }
+
+    .search-box {
+        background: #111827;
+        border: 1px solid #232b3b;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 24px;
+    }
+
+    .search-form {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(180px, 1fr) auto;
+        gap: 12px;
+    }
+
+    .search-form input,
+    .search-form select {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid #2c3648;
+        background: #0f1724;
+        color: #fff;
+        outline: none;
+    }
+
+    .search-form button {
+        background: #e50914;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 18px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .catalog-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    .movie-card {
+        background: #111827;
+        border: 1px solid #232b3b;
+        border-radius: 18px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .movie-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    .movie-poster {
+        width: 100%;
+        height: 320px;
+        object-fit: cover;
+        display: block;
+        background: #0b1220;
+    }
+
+    .movie-card-body {
+        padding: 14px;
+    }
+
+    .movie-title {
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        line-height: 1.3;
+    }
+
+    .movie-meta {
+        color: #b8c1cc;
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .movie-rating {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #facc15;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .sidebar-card {
+        background: #111827;
+        border: 1px solid #232b3b;
+        border-radius: 18px;
+        padding: 18px;
+        position: sticky;
+        top: 20px;
+    }
+
+    .top-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .top-item-card {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 14px;
+        background: #1a2233;
+        border: 1px solid #2a3448;
+        border-radius: 14px;
+        padding: 14px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+    .top-item-card:hover {
+        background: #202a3f;
+    }
+
+    .top-item-left {
+        display: grid;
+        grid-template-columns: 36px 56px minmax(0, 1fr);
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+    }
+
+    .rank {
+        font-size: 28px;
+        font-weight: 800;
+        color: #facc15;
+        width: 36px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .top-thumb {
+        width: 56px;
+        height: 78px;
+        object-fit: cover;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+
+    .movie-info {
+        min-width: 0;
+    }
+
+    .movie-name {
+        display: block;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.35;
+        overflow: hidden;
+    }
+
+    .top-meta {
+        display: block;
+        color: #b8c1cc;
+        font-size: 12px;
+        margin-top: 4px;
+        line-height: 1.4;
+    }
+
+    .rating {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #facc15;
+        font-weight: 700;
+        white-space: nowrap;
+        background: rgba(250, 204, 21, 0.08);
+        border: 1px solid rgba(250, 204, 21, 0.22);
+        border-radius: 10px;
+        padding: 8px 10px;
+    }
+
+    .pagination-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 14px;
+        margin-top: 28px;
+        flex-wrap: wrap;
+    }
+
+    .pagination-box a,
+    .pagination-box span {
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: #111827;
+        border: 1px solid #232b3b;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .empty-box {
+        background: #111827;
+        border: 1px solid #232b3b;
+        border-radius: 16px;
+        padding: 24px;
+        color: #b8c1cc;
+        text-align: center;
+    }
+
+    @media (max-width: 1200px) {
+        .catalog-grid {
+            grid-template-columns: repeat(2, minmax(220px, 1fr));
+        }
+    }
+
+    @media (max-width: 992px) {
+        .portal-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .catalog-grid {
+            grid-template-columns: repeat(2, minmax(200px, 1fr));
+        }
+
+        .search-form {
+            grid-template-columns: 1fr;
+        }
+
+        .sidebar-card {
+            position: static;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .catalog-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="portal-layout">
+        <section class="catalog-section">
+            <h1 class="section-title">Catálogo de películas</h1>
+
+            <div class="search-box">
+                <form method="GET" class="search-form">
+                    <input type="text" name="q" value="{{ query }}" placeholder="Buscar por nombre, género o director">
+
+                    <select name="genero">
+                        <option value="">Todos los géneros</option>
+                        {% for genero in generos %}
+                        {% if genero_id == genero.id_genero|stringformat:"s" %}
+                        <option value="{{ genero.id_genero }}" selected>
+                            {{ genero.nombre }}
+                        </option>
+                        {% else %}
+                        <option value="{{ genero.id_genero }}">
+                            {{ genero.nombre }}
+                        </option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit">Buscar</button>
+                </form>
+            </div>
+
+            <div class="catalog-grid">
+                {% for movie in page_obj %}
+                <div class="movie-card" onclick="window.location.href='/pelicula/{{ movie.id_pelicula }}/'">
                     {% if movie.imagen_url %}
-                    <img src="{{ movie.imagen_url }}" style="width:50px; height:70px; object-fit:cover; border-radius:6px; margin:0 15px;">
+                    <img src="{{ movie.imagen_url }}" alt="{{ movie.nombre }}" class="movie-poster">
                     {% else %}
-                    <img src="https://api.dicebear.com/7.x/identicon/svg?seed={{ movie.nombre|urlencode }}" style="width:50px; height:70px; object-fit:cover; border-radius:6px; margin:0 15px;">
+                    <img src="https://api.dicebear.com/7.x/identicon/svg?seed={{ movie.nombre|urlencode }}"
+                        alt="{{ movie.nombre }}" class="movie-poster">
                     {% endif %}
-                    
-                    <div class="movie-info">
-                        <span class="movie-name">{{ movie.nombre }}</span>
-                        <span class="movie-meta">{{ movie.genero.nombre|default:"Sin Género" }} • {{ movie.anio }}</span>
-                    </div>
-                </div>
-                <div class="rating"><i class="fas fa-star"></i> {{ movie.rating|default:"0.0" }}</div>
-            </div>
-            {% empty %}
-            <div class="top-item-card">
-                <div class="top-item-left">
-                    <span class="rank">-</span>
-                    <div class="movie-info">
-                        <span class="movie-name">No hay películas registradas</span>
-                        <span class="movie-meta">Utiliza MySQL para agregar datos</span>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
 
-        </div>
+                    <div class="movie-card-body">
+                        <div class="movie-title">{{ movie.nombre }}</div>
+                        <div class="movie-meta">
+                            {% with generos=movie.generos.all %}
+                            {% for genero in generos|slice:":2" %}
+                            {{ genero.nombre }}{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                            Sin género
+                            {% endfor %}
+                            {% if generos|length > 2 %}...{% endif %}
+                            {% endwith %}
+
+                            •
+
+                            {% with directores=movie.directores.all %}
+                            {% for director in directores|slice:":2" %}
+                            {{ director.nombre }}{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                            Sin director
+                            {% endfor %}
+                            {% if directores|length > 2 %}...{% endif %}
+                            {% endwith %}
+
+                            • {{ movie.anio }}
+                        </div>
+                        <div class="movie-rating">
+                            <i class="fas fa-star"></i>
+                            {{ movie.promedio_calificacion|default:"0.0" }}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-box">
+                    No se encontraron películas con esos filtros.
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="pagination-box">
+                {% if page_obj.has_previous %}
+                <a href="?q={{ query }}&genero={{ genero_id }}&page={{ page_obj.previous_page_number }}">Anterior</a>
+                {% endif %}
+
+                <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+                {% if page_obj.has_next %}
+                <a href="?q={{ query }}&genero={{ genero_id }}&page={{ page_obj.next_page_number }}">Siguiente</a>
+                {% endif %}
+            </div>
+        </section>
+
+        <aside class="sidebar-section">
+            <div class="sidebar-card">
+                <h2 class="section-title" style="font-size: 24px; margin-bottom: 18px;">
+                    <i class="fas fa-crown"></i> Top global
+                </h2>
+
+                <div class="top-list">
+                    {% for movie in top_peliculas %}
+                    <div class="top-item-card" onclick="window.location.href='/pelicula/{{ movie.id_pelicula }}/'">
+                        <div class="top-item-left">
+                            <span class="rank">{{ forloop.counter }}</span>
+
+                            {% if movie.imagen_url %}
+                            <img src="{{ movie.imagen_url }}" class="top-thumb" alt="{{ movie.nombre }}">
+                            {% else %}
+                            <img src="https://api.dicebear.com/7.x/identicon/svg?seed={{ movie.nombre|urlencode }}"
+                                class="top-thumb" alt="{{ movie.nombre }}">
+                            {% endif %}
+
+                            <div class="movie-info">
+                                <span class="movie-name">{{ movie.nombre }}</span>
+                                <span class="top-meta">
+                                    {% with generos=movie.generos.all %}
+                                    {% for genero in generos|slice:":2" %}
+                                    {{ genero.nombre }}{% if not forloop.last %}, {% endif %}
+                                    {% empty %}
+                                    Sin género
+                                    {% endfor %}
+                                    {% if generos|length > 2 %}...{% endif %}
+                                    {% endwith %}
+                                    • {{ movie.anio }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            {{ movie.promedio_calificacion|default:"0.0" }}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-box">
+                        No hay películas registradas todavía.
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </aside>
     </div>
+</div>
 {% endblock %}
