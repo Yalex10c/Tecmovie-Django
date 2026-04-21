@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .password-page {
+        max-width: 620px;
+        margin: 40px auto;
+    }
+
+    .password-card {
+        background: #111827;
+        border: 1px solid #232b3b;
+        border-radius: 22px;
+        padding: 28px;
+        box-shadow: 0 18px 36px rgba(0,0,0,0.20);
+    }
+
+    .password-title {
+        font-size: 32px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        color: #fff;
+    }
+
+    .password-subtitle {
+        color: #aab3c0;
+        margin-bottom: 24px;
+        line-height: 1.6;
+    }
+
+    .password-form {
+        display: grid;
+        gap: 16px;
+    }
+
+    .password-form label {
+        display: block;
+        color: #d9e1ec;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .password-form input {
+        width: 100%;
+        padding: 13px 14px;
+        border-radius: 12px;
+        border: 1px solid #2c3648;
+        background: #0f1724;
+        color: #fff;
+        outline: none;
+    }
+
+    .password-form input:focus {
+        border-color: #e50914;
+    }
+
+    .helptext {
+        display: block;
+        color: #8f99a8;
+        font-size: 13px;
+        line-height: 1.5;
+        margin-top: 8px;
+    }
+
+    .errorlist {
+        list-style: none;
+        margin: 8px 0 0;
+        padding: 0;
+        color: #ff7a7a;
+        font-size: 13px;
+    }
+
+    .password-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .btn-main {
+        background: #e50914;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.08);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        padding: 12px 18px;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .message-success {
+        background: rgba(34,197,94,0.12);
+        border: 1px solid rgba(34,197,94,0.28);
+        color: #d1fae5;
+        padding: 14px 16px;
+        border-radius: 14px;
+        margin-bottom: 18px;
+    }
+
+    .message-error {
+        background: rgba(239,68,68,0.10);
+        border: 1px solid rgba(239,68,68,0.25);
+        color: #fecaca;
+        padding: 14px 16px;
+        border-radius: 14px;
+        margin-bottom: 18px;
+    }
+</style>
+
+<div class="container password-page">
+    <div class="password-card">
+        <h1 class="password-title">Cambiar contraseña</h1>
+        <p class="password-subtitle">
+            Por seguridad, escribe tu contraseña actual antes de establecer una nueva.
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message-success">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% if form.non_field_errors %}
+            <div class="message-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <form method="POST" class="password-form">
+            {% csrf_token %}
+
+            <div>
+                <label for="{{ form.old_password.id_for_label }}">Contraseña actual</label>
+                {{ form.old_password }}
+                {{ form.old_password.errors }}
+            </div>
+
+            <div>
+                <label for="{{ form.new_password1.id_for_label }}">Nueva contraseña</label>
+                {{ form.new_password1 }}
+                {{ form.new_password1.errors }}
+                {% if form.new_password1.help_text %}
+                    <small class="helptext">{{ form.new_password1.help_text|safe }}</small>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.new_password2.id_for_label }}">Confirmar nueva contraseña</label>
+                {{ form.new_password2 }}
+                {{ form.new_password2.errors }}
+            </div>
+
+            <div class="password-actions">
+                <button type="submit" class="btn-main">Guardar cambios</button>
+                <a href="{% url 'movies:home' %}" class="btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -531,8 +531,8 @@
 
             <div class="menu-section-title">Cuenta</div>
 
-            <li onclick="editarPerfilActual()">
-                <i class="fas fa-user-edit"></i> Editar Perfil
+            <li onclick="window.location.href='{% url 'users:cambiar_contrasena' %}'">
+                <i class="fas fa-key"></i> Cambiar contraseña
             </li>
             <li onclick="abrirConfiguracion()">
                 <i class="fas fa-cog"></i> Configuración

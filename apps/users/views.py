@@ -7,6 +7,10 @@ from django.utils import timezone
 from django.db.models import Avg, Count, Q
 from apps.reviews.models import Calificacion
 
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+
 from .forms import LoginForm, RegisterForm, MiMundoForm
 from .models import Usuario, Plan, Suscripcion, UsuarioGeneroPreferencia
 from apps.movies.models import Genero, Pelicula
@@ -337,4 +341,21 @@ def recomendaciones_view(request):
     return render(request, 'recomendaciones.html', {
         'recomendaciones': recomendaciones,
         'generos_relevantes': generos_relevantes,
+    })
+
+@login_required
+def cambiar_contrasena_view(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Tu contraseña se cambió correctamente.')
+            return redirect('users:cambiar_contrasena')
+    else:
+        form = PasswordChangeForm(user=request.user)
+
+    return render(request, 'cambiar_contrasena.html', {
+        'form': form
     })
