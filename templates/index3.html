@@ -150,15 +150,15 @@
 
     .score-wrap {
         display: flex;
-        align-items: center;
+        align-items: stretch;
         gap: 18px;
         flex-wrap: wrap;
-        margin-bottom: 18px;
+        margin-bottom: 22px;
     }
 
     .score-box {
-        background: rgba(229, 9, 20, 0.08);
-        border: 1px solid rgba(229, 9, 20, 0.18);
+        background: rgba(34, 197, 94, 0.10);
+        border: 1px solid rgba(34, 197, 94, 0.22);
         border-radius: 18px;
         padding: 18px 22px;
         min-width: 150px;
@@ -182,26 +182,13 @@
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 18px;
         padding: 18px 22px;
-        min-width: 200px;
-    }
-
-    .rate-form {
-        margin-top: 10px;
-    }
-
-    .rate-form select {
-        width: 100%;
-        padding: 10px 12px;
-        background: #0f1724;
-        color: #fff;
-        border: 1px solid #2c3648;
-        border-radius: 10px;
-        outline: none;
+        min-width: 220px;
     }
 
     .comment-form {
         display: grid;
-        gap: 12px;
+        gap: 14px;
+        margin-top: 10px;
         margin-bottom: 24px;
     }
 
@@ -357,25 +344,97 @@
     .similar-rating {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        color: #facc15;
+        gap: 10px;
+        color: #d1d5db;
         font-weight: 700;
         font-size: 14px;
+        flex-wrap: wrap;
+    }
+
+    .likes-mini {
+        color: #86efac;
+    }
+
+    .dislikes-mini {
+        color: #fca5a5;
+    }
+
+    .reaction-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+        margin-bottom: 26px;
+    }
+
+    .reaction-btn {
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .reaction-btn:hover {
+        transform: translateY(-2px) scale(1.03);
+    }
+
+    .reaction-btn.like.active {
+        background: rgba(34, 197, 94, 0.18);
+        border-color: rgba(34, 197, 94, 0.45);
+        box-shadow: 0 0 18px rgba(34, 197, 94, 0.18);
+    }
+
+    .reaction-btn.dislike.active {
+        background: rgba(239, 68, 68, 0.16);
+        border-color: rgba(239, 68, 68, 0.42);
+        box-shadow: 0 0 18px rgba(239, 68, 68, 0.16);
+    }
+
+    @keyframes popLike {
+        0% {
+            transform: scale(0.96);
+        }
+
+        60% {
+            transform: scale(1.08);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes shakeDislike {
+        0% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-3px);
+        }
+
+        50% {
+            transform: translateX(3px);
+        }
+
+        75% {
+            transform: translateX(-2px);
+        }
+
+        100% {
+            transform: translateX(0);
+        }
     }
 
     @media (max-width: 992px) {
         .similar-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
-    }
 
-    @media (max-width: 576px) {
-        .similar-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (max-width: 992px) {
         .detail-hero-content {
             grid-template-columns: 1fr;
         }
@@ -395,6 +454,10 @@
     }
 
     @media (max-width: 576px) {
+        .similar-grid {
+            grid-template-columns: 1fr;
+        }
+
         .detail-hero-content {
             padding: 20px;
         }
@@ -477,52 +540,41 @@
             <h2>Calificaciones y reseñas</h2>
 
             <div class="score-wrap">
-                <div class="score-box">
-                    <div class="score-number">{{ promedio_calificacion|default:"0.0" }}</div>
-                    <div class="score-label">Promedio general</div>
-                </div>
-
                 <div class="user-rating-box">
-                    <div style="font-weight:700; color:#fff;">Tu calificación</div>
-                    <div style="margin-top:6px; color:#c6cfdb;">
-                        {% if user_rating %}
-                        {{ user_rating }}/10
-                        {% else %}
-                        Aún no calificas esta película
-                        {% endif %}
+                    <div style="font-weight:700; color:#fff;">Reacciones</div>
+                    <div style="margin-top:8px; color:#c6cfdb; display:flex; gap:18px; flex-wrap:wrap;">
+                        <span style="color:#86efac; font-weight:700;">👍 {{ total_likes|default:"0" }}</span>
+                        <span style="color:#fca5a5; font-weight:700;">👎 {{ total_dislikes|default:"0" }}</span>
                     </div>
-
-                    {% if request.user.is_authenticated %}
-                    {% if can_interact %}
-                    <form method="POST" action="{% url 'interactions:rate_movie' pelicula.id_pelicula %}"
-                        class="rate-form">
-                        {% csrf_token %}
-                        <select name="puntuacion" onchange="this.form.submit()">
-                            <option value="">Selecciona una nota</option>
-                            <option value="10" {% if selected_rating == "10" %}selected{% endif %}>10</option>
-                            <option value="9" {% if selected_rating == "9" %}selected{% endif %}>9</option>
-                            <option value="8" {% if selected_rating == "8" %}selected{% endif %}>8</option>
-                            <option value="7" {% if selected_rating == "7" %}selected{% endif %}>7</option>
-                            <option value="6" {% if selected_rating == "6" %}selected{% endif %}>6</option>
-                            <option value="5" {% if selected_rating == "5" %}selected{% endif %}>5</option>
-                            <option value="4" {% if selected_rating == "4" %}selected{% endif %}>4</option>
-                            <option value="3" {% if selected_rating == "3" %}selected{% endif %}>3</option>
-                            <option value="2" {% if selected_rating == "2" %}selected{% endif %}>2</option>
-                            <option value="1" {% if selected_rating == "1" %}selected{% endif %}>1</option>
-                        </select>
-                    </form>
-                    {% else %}
-                    <div style="margin-top:10px; color:#9da8b7; font-size:14px;">
-                        Necesitas un plan de pago para calificar.
-                    </div>
-                    {% endif %}
-                    {% else %}
-                    <div style="margin-top:10px; color:#9da8b7; font-size:14px;">
-                        Inicia sesión para calificar.
-                    </div>
-                    {% endif %}
                 </div>
             </div>
+
+            {% if request.user.is_authenticated %}
+            {% if can_interact %}
+            <form method="POST" action="{% url 'interactions:rate_movie' pelicula.id_pelicula %}" class="reaction-form">
+                {% csrf_token %}
+                <div class="reaction-actions">
+                    <button type="submit" name="reaccion" value="like"
+                        class="reaction-btn like {% if user_reaction == 'like' %}active{% endif %}">
+                        <i class="fas fa-thumbs-up"></i> Me gusta
+                    </button>
+
+                    <button type="submit" name="reaccion" value="dislike"
+                        class="reaction-btn dislike {% if user_reaction == 'dislike' %}active{% endif %}">
+                        <i class="fas fa-thumbs-down"></i> No me gusta
+                    </button>
+                </div>
+            </form>
+            {% else %}
+            <div style="margin-top:10px; color:#9da8b7; font-size:14px;">
+                Necesitas un plan de pago para reaccionar.
+            </div>
+            {% endif %}
+            {% else %}
+            <div style="margin-top:10px; color:#9da8b7; font-size:14px;">
+                Inicia sesión para reaccionar.
+            </div>
+            {% endif %}
 
             {% if request.user.is_authenticated %}
             {% if can_interact %}
@@ -534,7 +586,7 @@
             {% else %}
             <div class="locked-box">
                 Tu suscripción actual es <strong>{{ request.user.current_plan_name }}</strong>.
-                Necesitas un plan de pago para comentar, calificar y guardar interacciones.
+                Necesitas un plan de pago para comentar, reaccionar y guardar interacciones.
                 <div style="margin-top:14px;">
                     <a href="{% url 'users:planes' %}" class="detail-btn">
                         <i class="fas fa-crown"></i> Ver planes
@@ -544,7 +596,7 @@
             {% endif %}
             {% else %}
             <div class="locked-box">
-                Inicia sesión o regístrate para dejar reseñas y calificaciones.
+                Inicia sesión o regístrate para dejar reseñas y reacciones.
             </div>
             {% endif %}
 
@@ -608,8 +660,13 @@
                 </div>
 
                 <div class="mini-row">
-                    <div class="mini-label">Promedio</div>
-                    <div class="mini-value">{{ promedio_calificacion|default:"0.0" }}</div>
+                    <div class="mini-label">Likes</div>
+                    <div class="mini-value">{{ total_likes|default:"0" }}</div>
+                </div>
+
+                <div class="mini-row">
+                    <div class="mini-label">Dislikes</div>
+                    <div class="mini-value">{{ total_dislikes|default:"0" }}</div>
                 </div>
 
                 <div class="mini-row">
@@ -650,6 +707,7 @@
             </div>
         </aside>
     </div>
+
     <div class="similar-section">
         <section class="detail-card">
             <h2>También te puede gustar</h2>
@@ -678,8 +736,8 @@
                         </div>
 
                         <div class="similar-rating">
-                            <i class="fas fa-star"></i>
-                            {{ movie.promedio_calificacion|default:"0.0" }}
+                            <span class="likes-mini">👍 {{ movie.total_likes|default:"0" }}</span>
+                            <span class="dislikes-mini">👎 {{ movie.total_dislikes|default:"0" }}</span>
                         </div>
                     </div>
                 </div>

@@ -16,8 +16,8 @@ def home_top_peliculas(request):
         Pelicula.objects
         .prefetch_related('generos', 'directores')
         .annotate(
-            promedio_calificacion=Avg('calificaciones__puntuacion'),
-            total_calificaciones=Count('calificaciones')
+            total_likes=Count('calificacion', filter=Q(calificacion__reaccion='like')),
+            total_dislikes=Count('calificacion', filter=Q(calificacion__reaccion='dislike'))
         )
         .all()
     )
@@ -42,10 +42,10 @@ def home_top_peliculas(request):
         Pelicula.objects
         .prefetch_related('generos', 'directores')
         .annotate(
-            promedio_calificacion=Avg('calificaciones__puntuacion'),
-            total_calificaciones=Count('calificaciones')
+            total_likes=Count('calificacion', filter=Q(calificacion__reaccion='like')),
+            total_dislikes=Count('calificacion', filter=Q(calificacion__reaccion='dislike'))
         )
-        .order_by('-promedio_calificacion', '-total_calificaciones', 'nombre')
+        .order_by('-total_likes', 'total_dislikes', 'nombre')
         .distinct()[:10]
     )
 
@@ -66,8 +66,8 @@ def nuevas_peliculas(request):
         Pelicula.objects
         .prefetch_related('generos', 'directores')
         .annotate(
-            promedio_calificacion=Avg('calificaciones__puntuacion'),
-            total_calificaciones=Count('calificaciones')
+            promedio_calificacion=Avg('calificacion'),
+            total_calificaciones=Count('calificacion')
         )
         .order_by('-anio', 'nombre')
     )
@@ -81,21 +81,9 @@ def nuevas_peliculas(request):
 
 def detalle_pelicula(request, id):
     pelicula = get_object_or_404(
-        Pelicula.objects.prefetch_related(
-            'generos',
-            'directores',
-            'actores',
-            'plataformas'
-        ),
+        Pelicula.objects.prefetch_related('generos', 'directores', 'actores', 'plataformas'),
         pk=id
     )
-
-    if request.user.is_authenticated:
-        HistorialVisita.objects.create(
-            usuario=request.user,
-            pelicula=pelicula,
-            fecha_visita=timezone.now()
-        )
 
     if request.method == 'POST' and request.user.is_authenticated and request.user.can_interact:
         comentario = request.POST.get('comentario')
@@ -110,14 +98,17 @@ def detalle_pelicula(request, id):
     is_favorite = False
     is_in_watchlist = False
     can_interact = False
-    user_rating = None
+    user_reaction = None
 
-    promedio_calificacion = (
-        Calificacion.objects
-        .filter(pelicula=pelicula)
-        .aggregate(promedio=Avg('puntuacion'))
-        .get('promedio')
-    )
+    total_likes = Calificacion.objects.filter(
+        pelicula=pelicula,
+        reaccion='like'
+    ).count()
+
+    total_dislikes = Calificacion.objects.filter(
+        pelicula=pelicula,
+        reaccion='dislike'
+    ).count()
 
     if request.user.is_authenticated:
         from apps.interactions.models import Favorite, Watchlist
@@ -126,13 +117,13 @@ def detalle_pelicula(request, id):
         is_in_watchlist = Watchlist.objects.filter(user=request.user, movie=pelicula).exists()
         can_interact = request.user.can_interact
 
-        user_rating_obj = Calificacion.objects.filter(
+        user_reaction_obj = Calificacion.objects.filter(
             usuario=request.user,
             pelicula=pelicula
         ).first()
 
-        if user_rating_obj:
-            user_rating = user_rating_obj.puntuacion
+        if user_reaction_obj:
+            user_reaction = user_reaction_obj.reaccion
 
     resenas = (
         Resena.objects
@@ -141,56 +132,15 @@ def detalle_pelicula(request, id):
         .order_by('-fecha')
     )
 
-    selected_rating = ''
-    if user_rating is not None:
-        try:
-            selected_rating = str(int(float(user_rating)))
-        except (ValueError, TypeError):
-            selected_rating = ''
-
-    genero_ids = pelicula.generos.values_list('id_genero', flat=True)
-    director_ids = pelicula.directores.values_list('id_director', flat=True)
-
-    peliculas_similares = (
-        Pelicula.objects
-        .prefetch_related('generos', 'directores')
-        .annotate(
-            promedio_calificacion=Avg('calificaciones__puntuacion'),
-            total_calificaciones=Count('calificaciones'),
-            coincidencias_genero=Count(
-                'generos',
-                filter=Q(generos__id_genero__in=genero_ids),
-                distinct=True
-            ),
-            coincidencias_director=Count(
-                'directores',
-                filter=Q(directores__id_director__in=director_ids),
-                distinct=True
-            ),
-        )
-        .exclude(id_pelicula=pelicula.id_pelicula)
-        .filter(
-            Q(generos__id_genero__in=genero_ids) |
-            Q(directores__id_director__in=director_ids)
-        )
-        .distinct()
-        .order_by(
-            '-coincidencias_director',
-            '-coincidencias_genero',
-            '-promedio_calificacion',
-            'nombre'
-        )[:6]
-    )
-
     context = {
         'pelicula': pelicula,
         'resenas': resenas,
         'is_favorite': is_favorite,
         'is_in_watchlist': is_in_watchlist,
         'can_interact': can_interact,
-        'user_rating': user_rating,
-        'selected_rating': selected_rating,
-        'promedio_calificacion': promedio_calificacion,
-        'peliculas_similares': peliculas_similares,
+        'user_reaction': user_reaction,
+        'total_likes': total_likes,
+        'total_dislikes': total_dislikes,
     }
+
     return render(request, 'index3.html', context)

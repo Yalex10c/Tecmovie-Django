@@ -201,8 +201,8 @@ def mi_mundo_view(request):
             Pelicula.objects
             .prefetch_related('generos', 'directores')
             .annotate(
-                promedio_calificacion=Avg('calificaciones__puntuacion'),
-                total_calificaciones=Count('calificaciones'),
+                promedio_calificacion=Avg('calificacion'),
+                total_calificaciones=Count('calificacion'),
                 coincidencias_genero=Count(
                     'generos',
                     filter=Q(generos__id_genero__in=genero_ids_relevantes),
@@ -320,8 +320,8 @@ def recomendaciones_view(request):
             Pelicula.objects
             .prefetch_related('generos', 'directores')
             .annotate(
-                promedio_calificacion=Avg('calificaciones__puntuacion'),
-                total_calificaciones=Count('calificaciones'),
+                promedio_calificacion=Avg('calificacion'),
+                total_calificaciones=Count('calificacion'),
                 coincidencias_genero=Count(
                     'generos',
                     filter=Q(generos__id_genero__in=genero_ids_relevantes),
