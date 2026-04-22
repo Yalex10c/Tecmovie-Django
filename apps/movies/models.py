@@ -28,6 +28,10 @@ class Director(models.Model):
 class Actor(models.Model):
     id_actor = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=150)
+    imagen_url = models.CharField(max_length=500, blank=True, null=True)
+    biografia = models.TextField(blank=True, null=True)
+    pais_origen = models.CharField(max_length=120, blank=True, null=True)
+    fecha_nacimiento = models.DateField(blank=True, null=True)
 
     class Meta:
         db_table = 'actores'
@@ -35,7 +39,6 @@ class Actor(models.Model):
 
     def __str__(self):
         return self.nombre
-
 
 class Plataforma(models.Model):
     id_plataforma = models.AutoField(primary_key=True)

@@ -48,12 +48,6 @@ class DirectorAdmin(admin.ModelAdmin):
     search_fields = ('nombre',)
 
 
-@admin.register(Actor)
-class ActorAdmin(admin.ModelAdmin):
-    list_display = ('nombre',)
-    search_fields = ('nombre',)
-
-
 @admin.register(Plataforma)
 class PlataformaAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'url')
@@ -107,3 +101,10 @@ class PeliculaPlataformaAdmin(admin.ModelAdmin):
     list_display = ('pelicula', 'plataforma')
     search_fields = ('pelicula__nombre', 'plataforma__nombre')
     autocomplete_fields = ['pelicula', 'plataforma']
+
+
+@admin.register(Actor)
+class ActorAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'pais_origen', 'fecha_nacimiento')
+    search_fields = ('nombre', 'pais_origen')
+    ordering = ('nombre',)

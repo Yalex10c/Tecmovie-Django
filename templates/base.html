@@ -466,9 +466,17 @@
                 <a href="{% url 'movies:home' %}" class="{% if request.path == '/' %}active{% endif %}">Top</a>
             </li>
             <li>
-                <a href="{% url 'movies:nuevas' %}"
-                    class="{% if '/nuevas/' in request.path %}active{% endif %}">Nuevas</a>
+                <a href="{% url 'movies:tendencias' %}"
+                    class="{% if '/tendencias/' in request.path %}active{% endif %}">Tendencias</a>
             </li>
+
+            <li>
+                <a href="{% url 'movies:actores' %}"
+                    class="{% if '/actores/' in request.path or '/actor/' in request.path %}active{% endif %}">
+                    Actores
+                </a>
+            </li>
+
 
             {% if request.user.is_authenticated %}
             <li>

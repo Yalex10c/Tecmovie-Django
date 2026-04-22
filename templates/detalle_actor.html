@@ -1,0 +1,432 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .actor-page {
+        padding-bottom: 50px;
+    }
+
+    .actor-hero {
+        position: relative;
+        min-height: 420px;
+        border-radius: 28px;
+        overflow: hidden;
+        background: #161b26;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        margin-bottom: 30px;
+        display: flex;
+        align-items: end;
+    }
+
+    .actor-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(to right, rgba(15, 16, 20, 0.88) 15%, rgba(15, 16, 20, 0.70) 48%, rgba(15, 16, 20, 0.90) 100%);
+    }
+
+    .actor-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at 15% 20%, rgba(229, 9, 20, 0.16), transparent 28%),
+            radial-gradient(circle at 75% 25%, rgba(0, 180, 255, 0.14), transparent 30%),
+            radial-gradient(circle at 60% 80%, rgba(130, 100, 255, 0.12), transparent 28%);
+        pointer-events: none;
+    }
+
+    .actor-hero-content {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 28px;
+        padding: 32px;
+        align-items: center;
+    }
+
+    .actor-photo-wrap {
+        width: 100%;
+        max-width: 260px;
+        height: 340px;
+        border-radius: 22px;
+        overflow: hidden;
+        background: #0f1724;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .actor-photo-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .actor-info h1 {
+        font-size: 46px;
+        line-height: 1.05;
+        margin-bottom: 14px;
+        color: #fff;
+    }
+
+    .actor-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .actor-badge {
+        background: rgba(255, 255, 255, 0.10);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #e7ebf1;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .actor-bio {
+        color: #d3d7df;
+        font-size: 16px;
+        line-height: 1.75;
+        max-width: 900px;
+        margin-bottom: 20px;
+    }
+
+    .actor-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(150px, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+    }
+
+    .actor-stat-card {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        padding: 18px;
+    }
+
+    .actor-stat-number {
+        font-size: 28px;
+        font-weight: 800;
+        color: #fff;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .actor-stat-label {
+        font-size: 13px;
+        color: #aab3c0;
+        font-weight: 600;
+    }
+
+    .content-card {
+        background: #111827;
+        border: 1px solid #232b3b;
+        border-radius: 22px;
+        padding: 24px;
+        margin-bottom: 24px;
+    }
+
+    .content-card h2 {
+        font-size: 26px;
+        margin-bottom: 18px;
+        color: #fff;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .info-item {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    .info-label {
+        color: #9da8b7;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .info-value {
+        color: #fff;
+        font-weight: 700;
+        line-height: 1.5;
+    }
+
+    .movies-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .movie-card {
+        background: #111827;
+        border: 1px solid #232b3b;
+        border-radius: 18px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .movie-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    .movie-poster {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+        display: block;
+        background: #0b1220;
+    }
+
+    .movie-body {
+        padding: 14px;
+    }
+
+    .movie-title {
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        line-height: 1.3;
+    }
+
+    .movie-meta {
+        color: #b8c1cc;
+        font-size: 13px;
+        line-height: 1.4;
+        margin-bottom: 10px;
+    }
+
+    .movie-stats {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+
+    .movie-like {
+        color: #facc15;
+        font-weight: 700;
+    }
+
+    .movie-dislike {
+        color: #ff9d9d;
+        font-weight: 700;
+    }
+
+    .empty-box {
+        color: #aab3c0;
+        line-height: 1.6;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 16px;
+        padding: 20px;
+    }
+
+    @media (max-width: 1100px) {
+        .movies-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .actor-stats-grid {
+            grid-template-columns: repeat(2, minmax(150px, 1fr));
+        }
+
+        .info-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 900px) {
+        .actor-hero-content {
+            grid-template-columns: 1fr;
+        }
+
+        .actor-photo-wrap {
+            max-width: 220px;
+            height: 300px;
+        }
+
+        .actor-info h1 {
+            font-size: 36px;
+        }
+
+        .movies-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 600px) {
+        .movies-grid,
+        .actor-stats-grid,
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .actor-hero-content {
+            padding: 20px;
+        }
+
+        .content-card {
+            padding: 18px;
+        }
+
+        .actor-info h1 {
+            font-size: 30px;
+        }
+    }
+</style>
+
+<div class="container actor-page">
+    <section class="actor-hero">
+        <div class="actor-hero-content">
+            <div class="actor-photo-wrap">
+                {% if actor.imagen_url %}
+                <img src="{{ actor.imagen_url }}" alt="{{ actor.nombre }}">
+                {% else %}
+                <img src="https://api.dicebear.com/7.x/initials/svg?seed={{ actor.nombre|urlencode }}"
+                     alt="{{ actor.nombre }}">
+                {% endif %}
+            </div>
+
+            <div class="actor-info">
+                <h1>{{ actor.nombre }}</h1>
+
+                <div class="actor-badges">
+                    {% if actor.pais_origen %}
+                    <span class="actor-badge">{{ actor.pais_origen }}</span>
+                    {% endif %}
+
+                    {% if actor.fecha_nacimiento %}
+                    <span class="actor-badge">Nacimiento: {{ actor.fecha_nacimiento|date:"d/m/Y" }}</span>
+                    {% endif %}
+
+                    <span class="actor-badge">🎬 {{ actor.total_peliculas }} película{{ actor.total_peliculas|pluralize }}</span>
+                </div>
+
+                <div class="actor-bio">
+                    {% if actor.biografia %}
+                        {{ actor.biografia }}
+                    {% else %}
+                        Aún no hay información biográfica registrada para este actor.
+                    {% endif %}
+                </div>
+
+                <div class="actor-stats-grid">
+                    <div class="actor-stat-card">
+                        <div class="actor-stat-number">{{ actor.total_peliculas }}</div>
+                        <div class="actor-stat-label">Películas</div>
+                    </div>
+
+                    <div class="actor-stat-card">
+                        <div class="actor-stat-number">{{ actor.likes_acumulados|default:"0" }}</div>
+                        <div class="actor-stat-label">Likes acumulados</div>
+                    </div>
+
+                    <div class="actor-stat-card">
+                        <div class="actor-stat-number">{{ actor.dislikes_acumulados|default:"0" }}</div>
+                        <div class="actor-stat-label">Dislikes acumulados</div>
+                    </div>
+
+                    <div class="actor-stat-card">
+                        <div class="actor-stat-number">
+                            {% if porcentaje_positivo %}
+                                {{ porcentaje_positivo }}%
+                            {% else %}
+                                --
+                            {% endif %}
+                        </div>
+                        <div class="actor-stat-label">Aprobación positiva</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-card">
+        <h2>Ficha rápida</h2>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Nombre</div>
+                <div class="info-value">{{ actor.nombre }}</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">País de origen</div>
+                <div class="info-value">{{ actor.pais_origen|default:"No registrado" }}</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Fecha de nacimiento</div>
+                <div class="info-value">
+                    {% if actor.fecha_nacimiento %}
+                        {{ actor.fecha_nacimiento|date:"d/m/Y" }}
+                    {% else %}
+                        No registrada
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-card">
+        <h2>Películas donde participa</h2>
+
+        {% if peliculas_actor %}
+        <div class="movies-grid">
+            {% for movie in peliculas_actor %}
+            <div class="movie-card" onclick="window.location.href='/pelicula/{{ movie.id_pelicula }}/'">
+                {% if movie.imagen_url %}
+                <img src="{{ movie.imagen_url }}" alt="{{ movie.nombre }}" class="movie-poster">
+                {% else %}
+                <img src="https://api.dicebear.com/7.x/identicon/svg?seed={{ movie.nombre|urlencode }}"
+                     alt="{{ movie.nombre }}" class="movie-poster">
+                {% endif %}
+
+                <div class="movie-body">
+                    <div class="movie-title">{{ movie.nombre }}</div>
+
+                    <div class="movie-meta">
+                        {% for genero in movie.generos.all|slice:":2" %}
+                        {{ genero.nombre }}{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                        Sin género
+                        {% endfor %}
+                        • {{ movie.anio }}
+                    </div>
+
+                    <div class="movie-stats">
+                        <span class="movie-like">
+                            <i class="fas fa-thumbs-up"></i> {{ movie.total_likes|default:"0" }}
+                        </span>
+                        <span class="movie-dislike">
+                            <i class="fas fa-thumbs-down"></i> {{ movie.total_dislikes|default:"0" }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-box">
+            No hay películas asociadas a este actor.
+        </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
