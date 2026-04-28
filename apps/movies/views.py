@@ -242,7 +242,7 @@ def tendencias_peliculas(request):
         .order_by('-id_pelicula')[:12]
     )
 
-    tendencias_semana = (
+    mas_visitadas_semana = (
         Pelicula.objects
         .prefetch_related('generos', 'directores')
         .annotate(
@@ -254,12 +254,15 @@ def tendencias_peliculas(request):
             total_dislikes=Count('calificacion', filter=Q(calificacion__reaccion='dislike'))
         )
         .filter(visitas_semana__gt=0)
-        .order_by('-visitas_semana', '-total_likes', 'nombre')[:12]
+        .order_by('-visitas_semana', '-total_likes', 'total_dislikes', 'nombre')[:12]
     )
+
+    principal_tendencia = mas_visitadas_semana[0] if mas_visitadas_semana else None
 
     context = {
         'recien_llegadas': recien_llegadas,
-        'tendencias_semana': tendencias_semana,
+        'mas_visitadas_semana': mas_visitadas_semana,
+        'principal_tendencia': principal_tendencia,       
     }
 
     return render(request, 'index_tendencias.html', context)

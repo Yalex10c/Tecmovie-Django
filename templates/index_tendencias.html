@@ -121,6 +121,91 @@
         padding: 20px;
     }
 
+    .trend-featured {
+        position: relative;
+        overflow: hidden;
+        background: #111827;
+        border: 1px solid rgba(255, 160, 0, 0.28);
+        border-radius: 28px;
+        padding: 24px;
+        margin-bottom: 28px;
+        box-shadow: 0 0 30px rgba(255, 160, 0, 0.10);
+        cursor: pointer;
+    }
+
+    .trend-featured::before {
+        content: "";
+        position: absolute;
+        inset: -40%;
+        background:
+            radial-gradient(circle at 20% 50%, rgba(255, 120, 0, 0.24), transparent 30%),
+            radial-gradient(circle at 70% 40%, rgba(255, 180, 0, 0.16), transparent 30%);
+        filter: blur(20px);
+        animation: trendGlow 3.2s ease-in-out infinite alternate;
+        pointer-events: none;
+    }
+
+    .trend-featured-inner {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 24px;
+        align-items: center;
+    }
+
+    .trend-featured-poster {
+        width: 100%;
+        height: 420px;
+        object-fit: cover;
+        border-radius: 22px;
+        background: #0b1220;
+    }
+
+    .trend-featured-label {
+        color: #facc15;
+        font-weight: 900;
+        margin-bottom: 10px;
+    }
+
+    .trend-featured-title {
+        color: #fff;
+        font-size: 42px;
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 14px;
+    }
+
+    .trend-carousel {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 260px;
+        gap: 18px;
+        overflow-x: auto;
+        padding-bottom: 12px;
+    }
+
+    .trend-carousel::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .trend-carousel::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.16);
+        border-radius: 999px;
+    }
+
+    @keyframes trendGlow {
+        0% {
+            transform: translateX(-5%) scale(1);
+            opacity: 0.55;
+        }
+
+        100% {
+            transform: translateX(6%) scale(1.05);
+            opacity: 0.85;
+        }
+    }
+
     @media (max-width: 900px) {
         .trend-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -150,7 +235,7 @@
         <h2>Recién llegadas</h2>
 
         {% if recien_llegadas %}
-        <div class="trend-grid">
+        <div class="trend-carousel">
             {% for movie in recien_llegadas %}
             <div class="trend-card" onclick="window.location.href='/pelicula/{{ movie.id_pelicula }}/'">
                 {% if movie.imagen_url %}
@@ -194,9 +279,9 @@
     <section class="trend-section-card">
         <h2>Tendencias de la semana</h2>
 
-        {% if tendencias_semana %}
-        <div class="trend-grid">
-            {% for movie in tendencias_semana %}
+        {% if mas_visitadas_semana %}
+        <div class="trend-carousel">
+            {% for movie in mas_visitadas_semana %}
             <div class="trend-card" onclick="window.location.href='/pelicula/{{ movie.id_pelicula }}/'">
                 {% if movie.imagen_url %}
                 <img src="{{ movie.imagen_url }}" alt="{{ movie.nombre }}" class="trend-poster">
@@ -238,5 +323,45 @@
         </div>
         {% endif %}
     </section>
+    {% if principal_tendencia %}
+    <section class="trend-featured" onclick="window.location.href='/pelicula/{{ principal_tendencia.id_pelicula }}/'">
+        <div class="trend-featured-inner">
+            {% if principal_tendencia.imagen_url %}
+            <img src="{{ principal_tendencia.imagen_url }}" alt="{{ principal_tendencia.nombre }}"
+                class="trend-featured-poster">
+            {% else %}
+            <img src="https://api.dicebear.com/7.x/identicon/svg?seed={{ principal_tendencia.nombre|urlencode }}"
+                alt="{{ principal_tendencia.nombre }}" class="trend-featured-poster">
+            {% endif %}
+
+            <div>
+                <div class="trend-featured-label">🔥 Tendencia #1 de la semana</div>
+                <h2 class="trend-featured-title">{{ principal_tendencia.nombre }}</h2>
+
+                <div class="trend-meta">
+                    {% for genero in principal_tendencia.generos.all|slice:":3" %}
+                    {{ genero.nombre }}{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                    Sin género
+                    {% endfor %}
+                    • {{ principal_tendencia.anio }}
+                </div>
+
+                <div class="trend-stats">
+                    <span class="trend-visit">
+                        <i class="fas fa-fire"></i> {{ principal_tendencia.visitas_semana|default:"0" }} visitas esta
+                        semana
+                    </span>
+                    <span class="trend-like">
+                        <i class="fas fa-thumbs-up"></i> {{ principal_tendencia.total_likes|default:"0" }}
+                    </span>
+                    <span class="trend-dislike">
+                        <i class="fas fa-thumbs-down"></i> {{ principal_tendencia.total_dislikes|default:"0" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
 </div>
 {% endblock %}
