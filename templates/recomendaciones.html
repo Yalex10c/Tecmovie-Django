@@ -190,6 +190,12 @@
                             <i class="fas fa-thumbs-down"></i> {{ movie.total_dislikes|default:"0" }}
                         </span>
                     </div>
+                    {% if movie.motivo_recomendacion %}
+                    <div style="margin-top:10px; color:#9da8b7; font-size:12px; line-height:1.4;">
+                        <i class="fas fa-wand-magic-sparkles" style="color:#facc15;"></i>
+                        {{ movie.motivo_recomendacion }}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}

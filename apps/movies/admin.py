@@ -44,8 +44,9 @@ class GeneroAdmin(admin.ModelAdmin):
 
 @admin.register(Director)
 class DirectorAdmin(admin.ModelAdmin):
-    list_display = ('nombre',)
-    search_fields = ('nombre',)
+    list_display = ('nombre', 'pais_origen', 'fecha_nacimiento')
+    search_fields = ('nombre', 'pais_origen')
+    ordering = ('nombre',)
 
 
 @admin.register(Plataforma)
@@ -105,6 +106,18 @@ class PeliculaPlataformaAdmin(admin.ModelAdmin):
 
 @admin.register(Actor)
 class ActorAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'pais_origen', 'fecha_nacimiento')
-    search_fields = ('nombre', 'pais_origen')
+    list_display = ('nombre', 'ocupacion', 'pais_origen', 'fecha_nacimiento')
+    search_fields = ('nombre', 'pais_origen', 'ocupacion', 'conocido_por')
     ordering = ('nombre',)
+
+    fieldsets = (
+        ('Información básica', {
+            'fields': ('nombre', 'imagen_url', 'ocupacion', 'pais_origen', 'fecha_nacimiento')
+        }),
+        ('Biografía', {
+            'fields': ('biografia',)
+        }),
+        ('Carrera', {
+            'fields': ('conocido_por', 'carrera_destacada', 'premios')
+        }),
+    )

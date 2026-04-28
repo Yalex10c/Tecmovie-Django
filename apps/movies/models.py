@@ -17,6 +17,15 @@ class Director(models.Model):
     id_director = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=150)
 
+    imagen_url = models.CharField(max_length=500, blank=True, null=True)
+    biografia = models.TextField(blank=True, null=True)
+    pais_origen = models.CharField(max_length=120, blank=True, null=True)
+    fecha_nacimiento = models.DateField(blank=True, null=True)
+
+    premios = models.TextField(blank=True, null=True)
+    conocido_por = models.TextField(blank=True, null=True)
+    carrera_destacada = models.TextField(blank=True, null=True)
+
     class Meta:
         db_table = 'directores'
         managed = False
@@ -32,6 +41,11 @@ class Actor(models.Model):
     biografia = models.TextField(blank=True, null=True)
     pais_origen = models.CharField(max_length=120, blank=True, null=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
+
+    ocupacion = models.CharField(max_length=150, blank=True, null=True)
+    conocido_por = models.TextField(blank=True, null=True)
+    premios = models.TextField(blank=True, null=True)
+    carrera_destacada = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = 'actores'

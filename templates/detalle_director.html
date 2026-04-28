@@ -2,11 +2,11 @@
 
 {% block content %}
 <style>
-    .actor-page {
+    .director-page {
         padding-bottom: 50px;
     }
 
-    .actor-hero {
+    .director-hero {
         position: relative;
         min-height: 420px;
         border-radius: 28px;
@@ -18,7 +18,7 @@
         align-items: end;
     }
 
-    .actor-hero::before {
+    .director-hero::before {
         content: "";
         position: absolute;
         inset: 0;
@@ -26,7 +26,7 @@
             linear-gradient(to right, rgba(15, 16, 20, 0.88) 15%, rgba(15, 16, 20, 0.70) 48%, rgba(15, 16, 20, 0.90) 100%);
     }
 
-    .actor-hero::after {
+    .director-hero::after {
         content: "";
         position: absolute;
         inset: 0;
@@ -37,7 +37,7 @@
         pointer-events: none;
     }
 
-    .actor-hero-content {
+    .director-hero-content {
         position: relative;
         z-index: 2;
         width: 100%;
@@ -48,7 +48,7 @@
         align-items: center;
     }
 
-    .actor-photo-wrap {
+    .director-photo-wrap {
         width: 100%;
         max-width: 260px;
         height: 340px;
@@ -59,28 +59,26 @@
         box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
     }
 
-    .actor-photo-wrap img {
+    .director-photo-wrap img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        display: block;
     }
 
-    .actor-info h1 {
+    .director-info h1 {
         font-size: 46px;
-        line-height: 1.05;
         margin-bottom: 14px;
         color: #fff;
     }
 
-    .actor-badges {
+    .director-badges {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
         margin-bottom: 18px;
     }
 
-    .actor-badge {
+    .director-badge {
         background: rgba(255, 255, 255, 0.10);
         border: 1px solid rgba(255, 255, 255, 0.08);
         color: #e7ebf1;
@@ -90,7 +88,7 @@
         font-weight: 700;
     }
 
-    .actor-bio {
+    .director-bio {
         color: #d3d7df;
         font-size: 16px;
         line-height: 1.75;
@@ -98,29 +96,28 @@
         margin-bottom: 20px;
     }
 
-    .actor-stats-grid {
+    .director-stats-grid {
         display: grid;
         grid-template-columns: repeat(4, minmax(150px, 1fr));
         gap: 14px;
         margin-top: 18px;
     }
 
-    .actor-stat-card {
+    .director-stat-card {
         background: rgba(255, 255, 255, 0.06);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 18px;
         padding: 18px;
     }
 
-    .actor-stat-number {
+    .director-stat-number {
         font-size: 28px;
         font-weight: 800;
         color: #fff;
-        line-height: 1;
         margin-bottom: 8px;
     }
 
-    .actor-stat-label {
+    .director-stat-label {
         font-size: 13px;
         color: #aab3c0;
         font-weight: 600;
@@ -138,207 +135,6 @@
         font-size: 26px;
         margin-bottom: 18px;
         color: #fff;
-    }
-
-    .info-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
-    }
-
-    .info-item {
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        padding: 16px;
-    }
-
-    .info-label {
-        color: #9da8b7;
-        font-size: 13px;
-        margin-bottom: 8px;
-    }
-
-    .info-value {
-        color: #fff;
-        font-weight: 700;
-        line-height: 1.5;
-    }
-
-    .movies-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 18px;
-    }
-
-    .movie-card {
-        background: #111827;
-        border: 1px solid #232b3b;
-        border-radius: 18px;
-        overflow: hidden;
-        cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .movie-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-    }
-
-    .movie-poster {
-        width: 100%;
-        height: 260px;
-        object-fit: cover;
-        display: block;
-        background: #0b1220;
-    }
-
-    .movie-body {
-        padding: 14px;
-    }
-
-    .movie-title {
-        color: #fff;
-        font-size: 16px;
-        font-weight: 700;
-        margin-bottom: 6px;
-        line-height: 1.3;
-    }
-
-    .movie-meta {
-        color: #b8c1cc;
-        font-size: 13px;
-        line-height: 1.4;
-        margin-bottom: 10px;
-    }
-
-    .movie-stats {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-top: 8px;
-    }
-
-    .movie-like {
-        color: #facc15;
-        font-weight: 700;
-    }
-
-    .movie-dislike {
-        color: #ff9d9d;
-        font-weight: 700;
-    }
-
-    .empty-box {
-        color: #aab3c0;
-        line-height: 1.6;
-        background: rgba(255, 255, 255, 0.04);
-        border-radius: 16px;
-        padding: 20px;
-    }
-
-    @media (max-width: 1100px) {
-        .movies-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-
-        .actor-stats-grid {
-            grid-template-columns: repeat(2, minmax(150px, 1fr));
-        }
-
-        .info-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-    }
-
-    @media (max-width: 900px) {
-        .actor-hero-content {
-            grid-template-columns: 1fr;
-        }
-
-        .actor-photo-wrap {
-            max-width: 220px;
-            height: 300px;
-        }
-
-        .actor-info h1 {
-            font-size: 36px;
-        }
-
-        .movies-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-    }
-
-    @media (max-width: 600px) {
-
-        .movies-grid,
-        .actor-stats-grid,
-        .info-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .actor-hero-content {
-            padding: 20px;
-        }
-
-        .content-card {
-            padding: 18px;
-        }
-
-        .actor-info h1 {
-            font-size: 30px;
-        }
-    }
-
-    .actor-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .actor-list li {
-        position: relative;
-        padding-left: 30px;
-        line-height: 1.6;
-        color: #d0d7e2;
-    }
-
-    .actor-list li::before {
-        content: "🏆";
-        position: absolute;
-        left: 0;
-        top: 0;
-        font-size: 14px;
-    }
-
-    .info-item {
-        background: #141b2d;
-        border-radius: 14px;
-        padding: 16px;
-        border: 1px solid #232b3b;
-    }
-
-    .info-label {
-        font-size: 12px;
-        color: #7e8796;
-        margin-bottom: 6px;
-        font-weight: 600;
-    }
-
-    .info-value {
-        font-size: 14px;
-        color: #fff;
-        line-height: 1.6;
-    }
-
-    .career-text {
-        color: #d0d7e2;
-        line-height: 1.8;
-        font-size: 14px;
     }
 
     .career-layout {
@@ -389,7 +185,6 @@
         display: grid;
         grid-template-columns: 28px 1fr;
         gap: 10px;
-        align-items: start;
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.05);
         border-radius: 14px;
@@ -399,13 +194,119 @@
         line-height: 1.5;
     }
 
-    .award-icon {
-        font-size: 17px;
-        line-height: 1.4;
+    .quick-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .quick-item {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    .quick-icon {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .quick-label {
+        color: #9da8b7;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .quick-value {
+        color: #fff;
+        font-weight: 800;
+    }
+
+    .movies-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .movie-card {
+        background: #111827;
+        border: 1px solid #232b3b;
+        border-radius: 18px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .movie-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    .movie-poster {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+    }
+
+    .movie-body {
+        padding: 14px;
+    }
+
+    .movie-title {
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .movie-meta {
+        color: #b8c1cc;
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    .movie-stats {
+        display: flex;
+        gap: 12px;
+    }
+
+    .movie-like {
+        color: #facc15;
+        font-weight: 700;
+    }
+
+    .movie-dislike {
+        color: #ff9d9d;
+        font-weight: 700;
+    }
+
+    .empty-box {
+        color: #aab3c0;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 16px;
+        padding: 20px;
     }
 
     @media (max-width: 900px) {
+
+        .director-hero-content,
         .career-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .movies-grid,
+        .quick-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+
+        .movies-grid,
+        .quick-grid,
+        .director-stats-grid {
             grid-template-columns: 1fr;
         }
     }
@@ -458,6 +359,20 @@
         z-index: 2;
     }
 
+    .featured-award-label {
+        color: #facc15;
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 6px;
+    }
+
+    .featured-award-text {
+        color: #fff;
+        font-size: 15px;
+        font-weight: 800;
+        line-height: 1.5;
+    }
+
     @keyframes awardGoldGlow {
         0% {
             transform: translateX(-5%) translateY(0) scale(1);
@@ -484,140 +399,73 @@
             left: 130%;
         }
     }
-
-    .featured-award-label {
-        color: #facc15;
-        font-size: 13px;
-        font-weight: 800;
-        margin-bottom: 6px;
-    }
-
-    .featured-award-text {
-        color: #fff;
-        font-size: 15px;
-        font-weight: 800;
-        line-height: 1.5;
-    }
-
-    .quick-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
-    }
-
-    .quick-item {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
-        border: 1px solid rgba(255, 255, 255, 0.07);
-        border-radius: 16px;
-        padding: 16px;
-    }
-
-    .quick-icon {
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
-
-    .quick-label {
-        color: #9da8b7;
-        font-size: 12px;
-        font-weight: 700;
-        margin-bottom: 6px;
-    }
-
-    .quick-value {
-        color: #fff;
-        font-weight: 800;
-        line-height: 1.45;
-    }
-
-    @media (max-width: 900px) {
-        .quick-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-    }
-
-    @media (max-width: 600px) {
-        .quick-grid {
-            grid-template-columns: 1fr;
-        }
-    }
 </style>
 
-<div class="container actor-page">
-    <section class="actor-hero">
-        <div class="actor-hero-content">
-            <div class="actor-photo-wrap">
-                {% if actor.imagen_url %}
-                <img src="{{ actor.imagen_url }}" alt="{{ actor.nombre }}">
+<div class="container director-page">
+    <section class="director-hero">
+        <div class="director-hero-content">
+            <div class="director-photo-wrap">
+                {% if director.imagen_url %}
+                <img src="{{ director.imagen_url }}" alt="{{ director.nombre }}">
                 {% else %}
-                <img src="https://api.dicebear.com/7.x/initials/svg?seed={{ actor.nombre|urlencode }}"
-                    alt="{{ actor.nombre }}">
+                <img src="https://api.dicebear.com/7.x/initials/svg?seed={{ director.nombre|urlencode }}"
+                    alt="{{ director.nombre }}">
                 {% endif %}
             </div>
 
-            <div class="actor-info">
-                <h1>{{ actor.nombre }}</h1>
+            <div class="director-info">
+                <h1>{{ director.nombre }}</h1>
 
-                <div class="actor-badges">
-                    {% if actor.ocupacion %}
-                    <span class="actor-badge">{{ actor.ocupacion }}</span>
+                <div class="director-badges">
+                    {% if director.pais_origen %}
+                    <span class="director-badge">{{ director.pais_origen }}</span>
                     {% endif %}
 
-                    {% if actor.pais_origen %}
-                    <span class="actor-badge">{{ actor.pais_origen }}</span>
+                    {% if director.fecha_nacimiento %}
+                    <span class="director-badge">Nacimiento: {{ director.fecha_nacimiento|date:"d/m/Y" }}</span>
                     {% endif %}
 
-                    {% if actor.fecha_nacimiento %}
-                    <span class="actor-badge">Nacimiento: {{ actor.fecha_nacimiento|date:"d/m/Y" }}</span>
-                    {% endif %}
-
-                    <span class="actor-badge">
-                        🎬 {{ actor.total_peliculas }} películas
-                    </span>
+                    <span class="director-badge">🎬 {{ director.total_peliculas }} películas</span>
                 </div>
 
-                <div class="actor-bio">
-                    {% if actor.biografia %}
-                    {{ actor.biografia }}
-                    {% else %}
-                    Aún no hay información biográfica registrada para este actor.
-                    {% endif %}
+                <div class="director-bio">
+                    {{ director.biografia|default:"Aún no hay información biográfica registrada para este director." }}
                 </div>
 
-                {% if actor.premios %}
+                {% if director.premios %}
                 <div class="featured-award">
                     <div class="featured-award-label">🏆 Premio destacado</div>
                     <div class="featured-award-text">
-                        {{ actor.premios.splitlines.0 }}
+                        {{ director.premios.splitlines.0 }}
                     </div>
                 </div>
                 {% endif %}
 
-                <div class="actor-stats-grid">
-                    <div class="actor-stat-card">
-                        <div class="actor-stat-number">{{ actor.total_peliculas }}</div>
-                        <div class="actor-stat-label">Películas</div>
+                <div class="director-stats-grid">
+                    <div class="director-stat-card">
+                        <div class="director-stat-number">{{ director.total_peliculas }}</div>
+                        <div class="director-stat-label">Películas dirigidas</div>
                     </div>
 
-                    <div class="actor-stat-card">
-                        <div class="actor-stat-number">{{ actor.likes_acumulados|default:"0" }}</div>
-                        <div class="actor-stat-label">Likes acumulados</div>
+                    <div class="director-stat-card">
+                        <div class="director-stat-number">{{ director.likes_acumulados|default:"0" }}</div>
+                        <div class="director-stat-label">Likes acumulados</div>
                     </div>
 
-                    <div class="actor-stat-card">
-                        <div class="actor-stat-number">{{ actor.dislikes_acumulados|default:"0" }}</div>
-                        <div class="actor-stat-label">Dislikes acumulados</div>
+                    <div class="director-stat-card">
+                        <div class="director-stat-number">{{ director.dislikes_acumulados|default:"0" }}</div>
+                        <div class="director-stat-label">Dislikes acumulados</div>
                     </div>
 
-                    <div class="actor-stat-card">
-                        <div class="actor-stat-number">
+                    <div class="director-stat-card">
+                        <div class="director-stat-number">
                             {% if porcentaje_positivo %}
                             {{ porcentaje_positivo }}%
                             {% else %}
                             --
                             {% endif %}
                         </div>
-                        <div class="actor-stat-label">Aprobación positiva</div>
+                        <div class="director-stat-label">Aprobación positiva</div>
                     </div>
                 </div>
             </div>
@@ -632,15 +480,15 @@
                 <div class="career-block">
                     <div class="career-label">Conocido por</div>
                     <div class="career-title">
-                        {{ actor.conocido_por|default:"No se ha registrado información." }}
+                        {{ director.conocido_por|default:"No se ha registrado información." }}
                     </div>
                 </div>
 
                 <div class="career-block">
                     <div class="career-label">Momentos destacados</div>
                     <div class="career-text">
-                        {% if actor.carrera_destacada %}
-                        {{ actor.carrera_destacada|linebreaksbr }}
+                        {% if director.carrera_destacada %}
+                        {{ director.carrera_destacada|linebreaksbr }}
                         {% else %}
                         No hay momentos destacados registrados.
                         {% endif %}
@@ -651,12 +499,12 @@
             <div class="awards-panel">
                 <div class="career-label">Premios y logros</div>
 
-                {% if actor.premios %}
+                {% if director.premios %}
                 <div class="awards-list">
-                    {% for linea in actor.premios.splitlines %}
+                    {% for linea in director.premios.splitlines %}
                     {% if linea %}
                     <div class="award-item">
-                        <span class="award-icon">🏆</span>
+                        <span>🏆</span>
                         <span>{{ linea }}</span>
                     </div>
                     {% endif %}
@@ -674,43 +522,43 @@
 
         <div class="quick-grid">
             <div class="quick-item">
-                <div class="quick-icon">🎭</div>
-                <div class="quick-label">Nombre</div>
-                <div class="quick-value">{{ actor.nombre }}</div>
-            </div>
-
-            <div class="quick-item">
                 <div class="quick-icon">🎬</div>
-                <div class="quick-label">Ocupación</div>
-                <div class="quick-value">{{ actor.ocupacion|default:"No registrada" }}</div>
+                <div class="quick-label">Nombre</div>
+                <div class="quick-value">{{ director.nombre }}</div>
             </div>
 
             <div class="quick-item">
                 <div class="quick-icon">🌎</div>
                 <div class="quick-label">País de origen</div>
-                <div class="quick-value">{{ actor.pais_origen|default:"No registrado" }}</div>
+                <div class="quick-value">{{ director.pais_origen|default:"No registrado" }}</div>
             </div>
 
             <div class="quick-item">
                 <div class="quick-icon">🎂</div>
                 <div class="quick-label">Fecha de nacimiento</div>
                 <div class="quick-value">
-                    {% if actor.fecha_nacimiento %}
-                    {{ actor.fecha_nacimiento|date:"d/m/Y" }}
+                    {% if director.fecha_nacimiento %}
+                    {{ director.fecha_nacimiento|date:"d/m/Y" }}
                     {% else %}
                     No registrada
                     {% endif %}
                 </div>
             </div>
+
+            <div class="quick-item">
+                <div class="quick-icon">🏆</div>
+                <div class="quick-label">Especialidad</div>
+                <div class="quick-value">Dirección cinematográfica</div>
+            </div>
         </div>
     </section>
 
     <section class="content-card">
-        <h2>Películas donde participa</h2>
+        <h2>Películas dirigidas</h2>
 
-        {% if peliculas_actor %}
+        {% if peliculas_director %}
         <div class="movies-grid">
-            {% for movie in peliculas_actor %}
+            {% for movie in peliculas_director %}
             <div class="movie-card" onclick="window.location.href='/pelicula/{{ movie.id_pelicula }}/'">
                 {% if movie.imagen_url %}
                 <img src="{{ movie.imagen_url }}" alt="{{ movie.nombre }}" class="movie-poster">
@@ -732,21 +580,15 @@
                     </div>
 
                     <div class="movie-stats">
-                        <span class="movie-like">
-                            <i class="fas fa-thumbs-up"></i> {{ movie.total_likes|default:"0" }}
-                        </span>
-                        <span class="movie-dislike">
-                            <i class="fas fa-thumbs-down"></i> {{ movie.total_dislikes|default:"0" }}
-                        </span>
+                        <span class="movie-like">👍 {{ movie.total_likes|default:"0" }}</span>
+                        <span class="movie-dislike">👎 {{ movie.total_dislikes|default:"0" }}</span>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
         {% else %}
-        <div class="empty-box">
-            No hay películas asociadas a este actor.
-        </div>
+        <div class="empty-box">No hay películas asociadas a este director.</div>
         {% endif %}
     </section>
 </div>

@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from django.utils import timezone
 from apps.interactions.models import HistorialVisita
-from .models import Pelicula, Genero, Actor
+from .models import Pelicula, Genero, Actor, Director
 from apps.reviews.models import Resena, Calificacion
 
 
@@ -131,6 +131,7 @@ def detalle_pelicula(request, id):
         .select_related('usuario')
         .order_by('-fecha')
     )
+    
 
     context = {
         'pelicula': pelicula,
@@ -262,3 +263,86 @@ def tendencias_peliculas(request):
     }
 
     return render(request, 'index_tendencias.html', context)
+
+def lista_directores(request):
+    query = request.GET.get('q', '').strip()
+
+    directores = (
+        Director.objects
+        .annotate(
+            total_peliculas=Count('peliculas', distinct=True),
+            likes_acumulados=Count(
+                'peliculas__calificacion',
+                filter=Q(peliculas__calificacion__reaccion='like'),
+                distinct=True
+            ),
+            dislikes_acumulados=Count(
+                'peliculas__calificacion',
+                filter=Q(peliculas__calificacion__reaccion='dislike'),
+                distinct=True
+            )
+        )
+        .order_by('-likes_acumulados', '-total_peliculas', 'nombre')
+    )
+
+    if query:
+        directores = directores.filter(
+            Q(nombre__icontains=query) |
+            Q(pais_origen__icontains=query) |
+            Q(biografia__icontains=query) |
+            Q(conocido_por__icontains=query)
+        )
+
+    paginator = Paginator(directores, 16)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    for director in page_obj:
+        total_reacciones = director.likes_acumulados + director.dislikes_acumulados
+        director.porcentaje_positivo = round((director.likes_acumulados * 100) / total_reacciones, 1) if total_reacciones > 0 else None
+
+    return render(request, 'directores.html', {
+        'page_obj': page_obj,
+        'query': query,
+    })
+
+def detalle_director(request, id):
+    director = get_object_or_404(
+        Director.objects.annotate(
+            total_peliculas=Count('peliculas', distinct=True),
+            likes_acumulados=Count(
+                'peliculas__calificacion',
+                filter=Q(peliculas__calificacion__reaccion='like'),
+                distinct=True
+            ),
+            dislikes_acumulados=Count(
+                'peliculas__calificacion',
+                filter=Q(peliculas__calificacion__reaccion='dislike'),
+                distinct=True
+            )
+        ),
+        pk=id
+    )
+
+    peliculas_director = (
+        director.peliculas
+        .prefetch_related('generos')
+        .annotate(
+            total_likes=Count('calificacion', filter=Q(calificacion__reaccion='like')),
+            total_dislikes=Count('calificacion', filter=Q(calificacion__reaccion='dislike'))
+        )
+        .order_by('-anio', 'nombre')
+        .distinct()
+    )
+
+    total_reacciones = director.likes_acumulados + director.dislikes_acumulados
+    porcentaje_positivo = round((director.likes_acumulados * 100) / total_reacciones, 1) if total_reacciones > 0 else None
+
+    context = {
+        'director': director,
+        'peliculas_director': peliculas_director,
+        'porcentaje_positivo': porcentaje_positivo,
+    }
+
+    return render(request, 'detalle_director.html', context)
+

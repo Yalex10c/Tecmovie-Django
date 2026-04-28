@@ -1,0 +1,398 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .directors-page {
+        padding-bottom: 50px;
+    }
+
+    .directors-hero {
+        background: linear-gradient(135deg, rgba(229, 9, 20, 0.16), rgba(90, 90, 255, 0.14), rgba(0, 200, 255, 0.10));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 28px;
+        padding: 32px;
+        margin-bottom: 28px;
+    }
+
+    .directors-title-main {
+        font-size: 40px;
+        font-weight: 800;
+        margin-bottom: 12px;
+        color: #fff;
+    }
+
+    .directors-subtitle {
+        color: #d0d7e2;
+        font-size: 16px;
+        line-height: 1.6;
+        max-width: 900px;
+    }
+
+    .directors-section-card {
+        background: #111827;
+        border: 1px solid #232b3b;
+        border-radius: 22px;
+        padding: 24px;
+    }
+
+    .directors-search-box {
+        background: #0f1724;
+        border: 1px solid #232b3b;
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+
+    .directors-search-form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+    }
+
+    .directors-search-form input {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid #2c3648;
+        background: #111827;
+        color: #fff;
+        outline: none;
+    }
+
+    .directors-search-form button {
+        background: #e50914;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 18px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .directors-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .director-card {
+        background: linear-gradient(180deg, rgba(17, 24, 39, 1) 0%, rgba(13, 19, 32, 1) 100%);
+        border: 1px solid #232b3b;
+        border-radius: 20px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+    }
+
+    .director-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
+        border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .director-photo-wrap {
+        width: 100%;
+        height: 260px;
+        background: #0b1220;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .director-photo-wrap::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(11, 18, 32, 0.28), rgba(11, 18, 32, 0.02));
+        pointer-events: none;
+    }
+
+    .director-photo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .director-body {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        flex: 1;
+    }
+
+    .director-name {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 1.3;
+        margin: 0;
+    }
+
+    .director-country {
+        color: #aeb8c6;
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: -4px;
+    }
+
+    .director-bio {
+        color: #cfd7e2;
+        font-size: 14px;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 44px;
+    }
+
+    .director-stats {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .director-stat {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 14px;
+        padding: 10px 12px;
+    }
+
+    .director-stat-label {
+        color: #97a3b4;
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .director-stat-value {
+        color: #fff;
+        font-size: 15px;
+        font-weight: 800;
+    }
+
+    .director-stat-value.like {
+        color: #facc15;
+    }
+
+    .director-stat-value.dislike {
+        color: #ff9d9d;
+    }
+
+    .director-stat-value.positive {
+        color: #86efac;
+    }
+
+    .director-footer-badge {
+        margin-top: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 12px;
+        border-radius: 14px;
+        font-size: 13px;
+        font-weight: 800;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+    }
+
+    .director-footer-badge.good {
+        background: rgba(34, 197, 94, 0.12);
+        border-color: rgba(34, 197, 94, 0.22);
+        color: #b7f7cb;
+    }
+
+    .director-footer-badge.mid {
+        background: rgba(250, 204, 21, 0.10);
+        border-color: rgba(250, 204, 21, 0.18);
+        color: #fde68a;
+    }
+
+    .director-footer-badge.low {
+        background: rgba(239, 68, 68, 0.10);
+        border-color: rgba(239, 68, 68, 0.18);
+        color: #fcb3b3;
+    }
+
+    .director-footer-badge.neutral {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.08);
+        color: #d6dde7;
+    }
+
+    .pagination-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 14px;
+        margin-top: 28px;
+        flex-wrap: wrap;
+    }
+
+    .pagination-box a,
+    .pagination-box span {
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: #111827;
+        border: 1px solid #232b3b;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .empty-box {
+        color: #aab3c0;
+        line-height: 1.6;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 16px;
+        padding: 20px;
+    }
+
+    @media (max-width: 1200px) {
+        .directors-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 900px) {
+        .directors-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .directors-title-main {
+            font-size: 34px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .directors-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .directors-search-form {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="container directors-page">
+    <section class="directors-hero">
+        <h1 class="directors-title-main">Directores</h1>
+        <p class="directors-subtitle">
+            Explora directores del catálogo y consulta su impacto según las reacciones acumuladas de sus películas.
+        </p>
+    </section>
+
+    <section class="directors-section-card">
+        <div class="directors-search-box">
+            <form method="GET" class="directors-search-form">
+                <input type="text" name="q" value="{{ query }}" placeholder="Buscar director por nombre, país o biografía">
+                <button type="submit">Buscar</button>
+            </form>
+        </div>
+
+        {% if page_obj %}
+        <div class="directors-grid">
+            {% for director in page_obj %}
+            <div class="director-card" onclick="window.location.href='/director/{{ director.id_director }}/'">
+                <div class="director-photo-wrap">
+                    {% if director.imagen_url %}
+                    <img src="{{ director.imagen_url }}" alt="{{ director.nombre }}" class="director-photo">
+                    {% else %}
+                    <img src="https://api.dicebear.com/7.x/initials/svg?seed={{ director.nombre|urlencode }}"
+                         alt="{{ director.nombre }}"
+                         class="director-photo">
+                    {% endif %}
+                </div>
+
+                <div class="director-body">
+                    <h3 class="director-name">{{ director.nombre }}</h3>
+
+                    <div class="director-country">
+                        {% if director.pais_origen %}
+                            {{ director.pais_origen }}
+                        {% else %}
+                            País no registrado
+                        {% endif %}
+                    </div>
+
+                    <div class="director-bio">
+                        {% if director.biografia %}
+                            {{ director.biografia }}
+                        {% else %}
+                            Aún no hay información biográfica registrada para este director.
+                        {% endif %}
+                    </div>
+
+                    <div class="director-stats">
+                        <div class="director-stat">
+                            <div class="director-stat-label">Películas</div>
+                            <div class="director-stat-value">🎬 {{ director.total_peliculas }}</div>
+                        </div>
+
+                        <div class="director-stat">
+                            <div class="director-stat-label">Aprobación</div>
+                            <div class="director-stat-value positive">
+                                {% if director.porcentaje_positivo %}
+                                    {{ director.porcentaje_positivo }}%
+                                {% else %}
+                                    --
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="director-stat">
+                            <div class="director-stat-label">Likes</div>
+                            <div class="director-stat-value like">
+                                <i class="fas fa-thumbs-up"></i> {{ director.likes_acumulados|default:"0" }}
+                            </div>
+                        </div>
+
+                        <div class="director-stat">
+                            <div class="director-stat-label">Dislikes</div>
+                            <div class="director-stat-value dislike">
+                                <i class="fas fa-thumbs-down"></i> {{ director.dislikes_acumulados|default:"0" }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if director.porcentaje_positivo %}
+                        {% if director.porcentaje_positivo >= 75 %}
+                        <div class="director-footer-badge good">Muy bien valorado</div>
+                        {% elif director.porcentaje_positivo >= 50 %}
+                        <div class="director-footer-badge mid">Recepción positiva</div>
+                        {% else %}
+                        <div class="director-footer-badge low">Recepción dividida</div>
+                        {% endif %}
+                    {% else %}
+                    <div class="director-footer-badge neutral">Sin suficientes reacciones</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="pagination-box">
+            {% if page_obj.has_previous %}
+            <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}">Anterior</a>
+            {% endif %}
+
+            <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+            <a href="?q={{ query }}&page={{ page_obj.next_page_number }}">Siguiente</a>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="empty-box">
+            No hay directores registrados todavía.
+        </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

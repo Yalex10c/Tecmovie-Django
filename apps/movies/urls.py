@@ -11,4 +11,7 @@ urlpatterns = [
 
     path('actores/', views.lista_actores, name='actores'),
     path('actor/<int:id>/', views.detalle_actor, name='detalle_actor'),
+
+    path('directores/', views.lista_directores, name='directores'),
+    path('director/<int:id>/', views.detalle_director, name='detalle_director'),
 ]

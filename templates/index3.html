@@ -289,6 +289,18 @@
         text-align: right;
     }
 
+    .actor-link {
+        display: inline-block;
+        color: #facc15;
+        font-weight: 700;
+        transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .actor-link:hover {
+        color: #fff;
+        transform: translateX(-2px);
+    }
+
     .similar-section {
         margin-top: 28px;
     }
@@ -652,9 +664,9 @@
                     <div class="mini-label">Directores</div>
                     <div class="mini-value">
                         {% for director in pelicula.directores.all %}
-                        {{ director.nombre }}{% if not forloop.last %}, {% endif %}
-                        {% empty %}
-                        Sin director
+                        <a href="{% url 'movies:detalle_director' director.id_director %}" class="actor-link">
+                            {{ director.nombre }}
+                        </a>{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </div>
                 </div>
@@ -687,7 +699,9 @@
                     <div class="mini-label">Actores</div>
                     <div class="mini-value">
                         {% for actor in pelicula.actores.all %}
-                        {{ actor.nombre }}{% if not forloop.last %}, {% endif %}
+                        <a href="{% url 'movies:detalle_actor' actor.id_actor %}" class="actor-link">
+                            {{ actor.nombre }}
+                        </a>{% if not forloop.last %}, {% endif %}
                         {% empty %}
                         Sin actores registrados
                         {% endfor %}

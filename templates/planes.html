@@ -1,227 +1,336 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <style>
-        .plans-container {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
+<style>
+    .plans-container {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
 
-        .plan-card {
-            background: var(--card-bg);
-            padding: 40px 30px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            width: 320px;
-            text-align: left;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-        }
+    .plan-card {
+        background: var(--surface-1);
+        padding: 40px 30px;
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        width: 320px;
+        text-align: left;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
 
-        .plan-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary-color);
-            box-shadow: 0 10px 30px rgba(229, 9, 20, 0.15);
-        }
+    .plan-card.featured {
+        border-color: var(--primary-color);
+        transform: scale(1.03);
+    }
 
-        .plan-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
-            opacity: 0;
-            transition: opacity 0.5s;
-            pointer-events: none;
-        }
+    .plan-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--primary-color);
+        box-shadow: 0 10px 30px rgba(229, 9, 20, 0.15);
+    }
 
-        .plan-card:hover::before {
-            opacity: 1;
-        }
+    .plan-card.featured:hover {
+        transform: scale(1.03) translateY(-8px);
+    }
 
-        .plan-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--text-main);
-        }
+    .plan-title {
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        color: var(--text-main);
+    }
 
-        .plan-price {
-            font-size: 36px;
-            font-weight: 800;
-            color: var(--primary-color);
-            margin-bottom: 25px;
-        }
+    .plan-title.featured-title {
+        color: var(--primary-color);
+    }
 
-        .plan-price span {
-            font-size: 16px;
-            color: var(--text-sec);
-            font-weight: 400;
-        }
+    .plan-price {
+        font-size: 36px;
+        font-weight: 900;
+        color: var(--primary-color);
+        margin-bottom: 25px;
+    }
 
-        .plan-features {
-            list-style: none;
-            margin-bottom: 35px;
-        }
+    .plan-price span {
+        font-size: 14px;
+        color: var(--text-sec);
+        font-weight: 500;
+    }
 
-        .plan-features li {
-            margin-bottom: 16px;
-            color: var(--text-sec);
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .plan-features {
+        list-style: none;
+        margin-bottom: 35px;
+        padding: 0;
+    }
 
-        .subscribe-btn {
-            background: rgba(229, 9, 20, 0.1);
-            color: var(--primary-color);
-            padding: 15px;
-            border: 1px solid var(--primary-color);
-            border-radius: 8px;
-            width: 100%;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+    .plan-features li {
+        margin-bottom: 16px;
+        color: var(--text-sec);
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
-        .plan-card:hover .subscribe-btn {
-            background: var(--primary-color);
-            color: var(--text-main);
-        }
-    </style>
+    .subscribe-btn {
+        background: rgba(229, 9, 20, 0.1);
+        color: var(--primary-color);
+        padding: 15px;
+        border: 1px solid var(--primary-color);
+        border-radius: 8px;
+        width: 100%;
+        font-weight: 800;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
 
-    <div class="container" style="text-align: center;">
-        <h1 class="page-title"><i class="fas fa-arrow-up"></i> Elige el Plan Ideal para Ti</h1>
-        <p style="color:var(--text-sec); margin-bottom: 40px; font-size:18px;">
-            Descubre todos los beneficios de la comunidad TECMOVIE
+    .subscribe-btn:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .badge-plan {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 8px;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .badge-active {
+        background: gray;
+    }
+
+    .badge-recommended {
+        background: var(--primary-color);
+    }
+
+    .payment-input {
+        width: 100%;
+        padding: 14px;
+        margin-bottom: 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(0,0,0,0.25);
+        color: white;
+        outline: none;
+    }
+
+    .payment-input:focus {
+        border-color: var(--primary-color);
+    }
+</style>
+
+<div class="container" style="text-align:center;">
+    <h1 class="page-title">
+        <i class="fas fa-arrow-up"></i> Elige el Plan Ideal para Ti
+    </h1>
+
+    <p style="color:var(--text-sec); margin-bottom:40px; font-size:18px;">
+        Descubre todos los beneficios de la comunidad TECMOVIE
+    </p>
+
+    <div class="plans-container">
+
+        <div class="plan-card">
+            <div class="plan-title">Gratuita</div>
+            <div class="plan-price" style="color:#a9a9b3;">
+                $0 <span>MXN/mes</span>
+            </div>
+
+            <ul class="plan-features">
+                <li><i class="fas fa-check" style="color:green;"></i> Ver catálogo completo</li>
+                <li><i class="fas fa-check" style="color:green;"></i> Leer reseñas de otros</li>
+                <li><i class="fas fa-times" style="color:#E50914;"></i> Comentar películas</li>
+                <li><i class="fas fa-times" style="color:#E50914;"></i> Votar películas</li>
+                <li><i class="fas fa-times" style="color:#E50914;"></i> Añadir a favoritos / watchlist</li>
+            </ul>
+
+            <button class="subscribe-btn" style="background:#222; color:#a9a9b3; border:none; cursor:not-allowed;" disabled>
+                {% if request.user.current_plan_name == 'Gratuita' %}
+                    Tu Plan Actual
+                {% else %}
+                    Plan Gratuito
+                {% endif %}
+            </button>
+        </div>
+
+        {% for plan in planes %}
+        <div class="plan-card {% if plan.nombre == 'Plan Premium' %}featured{% endif %}">
+
+            {% if request.user.current_plan_id == plan.id_plan %}
+            <div class="badge-plan badge-active">ACTIVO</div>
+            {% elif plan.nombre == 'Plan Premium' %}
+            <div class="badge-plan badge-recommended">RECOMENDADO</div>
+            {% endif %}
+
+            <div class="plan-title {% if plan.nombre == 'Plan Premium' %}featured-title{% endif %}">
+                {{ plan.nombre }}
+            </div>
+
+            <div class="plan-price">
+                ${{ plan.precio|floatformat:0 }}
+                <span>MXN / {{ plan.duracion_meses }} mes(es)</span>
+            </div>
+
+            <ul class="plan-features">
+                {% if plan.nombre == 'Plan Básico' %}
+                <li><i class="fas fa-video"></i> Ver catálogo completo</li>
+                <li><i class="fas fa-star"></i> Leer reseñas</li>
+                <li><i class="fas fa-comment"></i> Comentar películas</li>
+                <li><i class="fas fa-mobile-screen"></i> 1 dispositivo</li>
+                {% elif plan.nombre == 'Plan Premium' %}
+                <li><i class="fas fa-crown"></i> Rankings exclusivos</li>
+                <li><i class="fas fa-star-half-stroke"></i> Votar películas</li>
+                <li><i class="fas fa-heart"></i> Añadir a favoritos</li>
+                <li><i class="fas fa-ban"></i> Sin anuncios</li>
+                <li><i class="fas fa-mobile-screen"></i> 2 dispositivos</li>
+                {% else %}
+                <li><i class="fas fa-infinity"></i> Todo lo del Premium</li>
+                <li><i class="fas fa-users"></i> Hasta 4 cuentas</li>
+                <li><i class="fas fa-ban"></i> Sin anuncios</li>
+                <li><i class="fas fa-laptop"></i> Todos los dispositivos</li>
+                {% endif %}
+            </ul>
+
+            {% if request.user.current_plan_id == plan.id_plan %}
+            <button class="subscribe-btn" style="background:#222; color:#a9a9b3; border:none; cursor:not-allowed;" disabled>
+                Tu Plan Actual
+            </button>
+            {% else %}
+            <button class="subscribe-btn {% if plan.nombre == 'Plan Premium' %}featured-pay-btn{% endif %}"
+                onclick="abrirModalPago('{{ plan.id_plan }}')">
+                Adquirir {{ plan.nombre|cut:"Plan " }}
+            </button>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+<div class="modal" id="modalPago"
+    style="display:{% if error_upgrade %}flex{% else %}none{% endif %}; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); justify-content:center; align-items:center; z-index:999;">
+    
+    <div class="modal-content"
+        style="background:rgba(26,28,35,0.95); border:1px solid rgba(255,255,255,0.1); padding:40px; border-radius:20px; width:90%; max-width:440px; position:relative; box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+        
+        <span onclick="document.getElementById('modalPago').style.display='none'"
+            style="position:absolute; right:20px; top:20px; cursor:pointer; color:#a9a9b3; font-size:24px;">
+            &times;
+        </span>
+
+        <h2 style="margin-bottom:10px; text-align:center;">Finalizar compra</h2>
+        <p style="color:var(--text-sec); text-align:center; margin-bottom:24px;">
+            Ingresa los datos de tu tarjeta para activar tu suscripción.
         </p>
 
-        <div class="plans-container">
-            
-            <!-- Plan Gratuito Estático -->
-            <div class="plan-card">
-                <div class="plan-title">Gratuita</div>
-                <div class="plan-price" style="color:#a9a9b3;">$0 <span>MXN/mes</span></div>
-                <ul class="plan-features">
-                    <li><i class="fas fa-check" style="color:green;"></i> Ver catálogo completo</li>
-                    <li><i class="fas fa-check" style="color:green;"></i> Leer Reseñas de otros</li>
-                    <li><i class="fas fa-times" style="color:#E50914;"></i> Comentar Películas</li>
-                    <li><i class="fas fa-times" style="color:#E50914;"></i> Votar Películas</li>
-                    <li><i class="fas fa-times" style="color:#E50914;"></i> Añadir a Favoritos / Watchlist</li>
-                </ul>
-                <button class="subscribe-btn" style="background:#222; color:#a9a9b3; border:none; cursor:not-allowed;" disabled>
-                    {% if request.user.current_plan_name == 'Gratuita' %}Tu Plan Actual{% else %}Plan Gratuito{% endif %}
-                </button>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="upgrade">
+            <input type="hidden" name="plan_id" id="hiddenPlanId" value="">
+
+            <input class="payment-input" type="text" id="cardName" placeholder="Nombre en la tarjeta" required>
+
+            <div style="position:relative;">
+                <input class="payment-input" type="text" id="cardNumber" placeholder="Número de tarjeta" inputmode="numeric" maxlength="19" required>
+                <span id="cardType"
+                    style="position:absolute; right:12px; top:17px; color:#f5c518; font-weight:800; font-size:13px;">
+                    Tarjeta
+                </span>
             </div>
-            
-            <!-- Planes Premium Dinámicos -->
-            {% for plan in planes %}
-            <div class="plan-card" {% if plan.nombre == 'Plan Premium' %}style="border-color: var(--primary-color); transform: scale(1.03);"{% endif %}>
-                
-                {% if request.user.current_plan_id == plan.id_plan %}
-                <div style="position:absolute; top:20px; right:20px; background:gray; color:white; padding:4px 12px; border-radius:8px; font-size:10px; font-weight:bold;">ACTIVO</div>
-                {% elif plan.nombre == 'Plan Premium' %}
-                <div style="position:absolute; top:20px; right:20px; background:var(--primary-color); color:white; padding:4px 12px; border-radius:8px; font-size:10px; font-weight:bold;">RECOMENDADO</div>
-                {% endif %}
 
-                <div class="plan-title" {% if plan.nombre == 'Plan Premium' %}style="color: var(--primary-color);"{% endif %}>{{ plan.nombre }}</div>
-                <div class="plan-price">${{ plan.precio|floatformat:0 }} <span>MXN/ {{ plan.duracion_meses }} mes(es)</span></div>
-                
-                <ul class="plan-features">
-                    {% if plan.nombre == 'Plan Básico' %}
-                    <li><i class="fas fa-video"></i> Ver catálogo completo</li>
-                    <li><i class="fas fa-star"></i> Leer Reseñas</li>
-                    <li><i class="fas fa-comment"></i> Comentar Películas</li>
-                    <li><i class="fas fa-mobile-screen"></i> 1 dispositivo</li>
-                    {% elif plan.nombre == 'Plan Premium' %}
-                    <li><i class="fas fa-crown"></i> Rankings exclusivos</li>
-                    <li><i class="fas fa-star-half-stroke"></i> Votar Películas</li>
-                    <li><i class="fas fa-heart"></i> Añadir a Favoritos</li>
-                    <li><i class="fas fa-ban"></i> Sin anuncios</li>
-                    <li><i class="fas fa-mobile-screen"></i> 2 dispositivos</li>
-                    {% else %}
-                    <li><i class="fas fa-infinity"></i> Todo lo del Premium</li>
-                    <li><i class="fas fa-users"></i> Hasta 4 cuentas</li>
-                    <li><i class="fas fa-ban"></i> Sin anuncios</li>
-                    <li><i class="fas fa-laptop"></i> Todos los dispositivos</li>
-                    {% endif %}
-                </ul>
-
-                {% if request.user.current_plan_id == plan.id_plan %}
-                <button class="subscribe-btn" style="background:#222; color:#a9a9b3; border:none; cursor:not-allowed;" disabled>Tu Plan Actual</button>
-                {% else %}
-                <button class="subscribe-btn" {% if plan.nombre == 'Plan Premium' %}style="background:var(--primary-color); color:white;"{% endif %} onclick="abrirModalPago({{ plan.id_plan }})">Adquirir {{ plan.nombre|cut:"Plan " }}</button>
-                {% endif %}
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <input class="payment-input" type="text" id="cardExpiry" placeholder="MM/AA" inputmode="numeric" maxlength="5" required>
+                <input class="payment-input" type="text" id="cardCvv" placeholder="CVV" inputmode="numeric" maxlength="4" required>
             </div>
-            {% endfor %}
-        </div>
+
+            {% if error_upgrade %}
+            <p style="color:var(--primary-color); font-size:14px; margin-bottom:10px;">{{ error_upgrade }}</p>
+            {% endif %}
+
+            <button type="submit" class="subscribe-btn" style="background:var(--primary-color); color:white;">
+                Pagar suscripción
+            </button>
+        </form>
     </div>
+</div>
 
-    <!-- PAGO MODAL -->
-    <div class="modal" id="modalPago" style="display:{% if error_upgrade %}flex{% else %}none{% endif %}; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); justify-content:center; align-items:center; z-index:999;">
-        <div class="modal-content" style="background:rgba(26,28,35,0.85); border:1px solid rgba(255,255,255,0.1); padding:40px; border-radius:20px; width:90%; max-width:420px; position:relative; box-shadow:0 20px 50px rgba(0,0,0,0.5);">
-            <span class="close" onclick="document.getElementById('modalPago').style.display='none'" style="position:absolute; right:20px; top:20px; cursor:pointer; color:#a9a9b3; font-size:24px;">&times;</span>
-            <h2 style="margin-bottom:25px; text-align:center;">Finalizar compra e Inscribirse</h2>
+<script>
+    function abrirModalPago(planId) {
+        document.getElementById('hiddenPlanId').value = planId;
+        document.getElementById('modalPago').style.display = 'flex';
+    }
 
-            <form method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="upgrade">
-                <input type="hidden" name="plan_id" id="hiddenPlanId" value="">
+    const cardNumber = document.getElementById("cardNumber");
+    const cardType = document.getElementById("cardType");
+    const cardExpiry = document.getElementById("cardExpiry");
+    const cardCvv = document.getElementById("cardCvv");
 
-                <input type="text" placeholder="Nombre en la tarjeta" style="width:100%; padding:14px; margin-bottom:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:white;" required>
+    function detectarTipoTarjeta(numero) {
+        const clean = numero.replace(/\D/g, "");
 
-                <div style="position:relative;">
-                    <input type="text" placeholder="Número de tarjeta" id="tarjetaPago" maxlength="19" style="width:100%; padding:14px; margin-bottom:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:white;" required>
-                    <i class="far fa-credit-card" style="position:absolute; right:15px; top:15px; color:#a9a9b3;"></i>
-                </div>
-                <small id="bancoDetectado" style="display:block;margin-top:-10px;margin-bottom:15px;font-weight:600;color:var(--primary-color);"></small>
+        if (/^4/.test(clean)) return "VISA";
+        if (/^5[1-5]/.test(clean) || /^2[2-7]/.test(clean)) return "Mastercard";
+        if (/^3[47]/.test(clean)) return "Amex";
+        if (/^6(?:011|5)/.test(clean)) return "Discover";
 
-                <div style="display:flex; gap:10px; margin-bottom:15px;">
-                    <input type="text" placeholder="MM/AA" maxlength="5" style="width:50%; padding:14px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:white;" required>
-                    <input type="password" placeholder="CVV" maxlength="4" style="width:50%; padding:14px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:white;" required>
-                </div>
-                
-                {% if error_upgrade %}
-                <p style="color:var(--primary-color); font-size:14px; margin-bottom:10px;">{{ error_upgrade }}</p>
-                {% endif %}
+        return "Tarjeta";
+    }
 
-                <button type="submit" class="btn btn-submit" style="width:100%; padding:14px; font-size:16px;">Pagar suscripción</button>
-            </form>
-        </div>
-    </div>
+    if (cardNumber) {
+        cardNumber.addEventListener("input", function () {
+            let value = this.value.replace(/\D/g, "").substring(0, 16);
+            this.value = value.replace(/(.{4})/g, "$1 ").trim();
 
-    <script>
-        function abrirModalPago(planId) {
-            document.getElementById('hiddenPlanId').value = planId;
-            document.getElementById('modalPago').style.display = 'flex';
-        }
+            const tipo = detectarTipoTarjeta(value);
+            cardType.textContent = tipo;
 
-        document.getElementById("tarjetaPago").addEventListener("input", function (e) {
-            let value = this.value.replace(/\D/g, '');
-            let formattedValue = '';
-            for (let i = 0; i < value.length; i++) {
-                if (i > 0 && i % 4 === 0) formattedValue += ' ';
-                formattedValue += value[i];
+            if (tipo === "Amex") {
+                cardCvv.maxLength = 4;
+            } else {
+                cardCvv.maxLength = 3;
+                cardCvv.value = cardCvv.value.substring(0, 3);
             }
-            this.value = formattedValue;
-            let number = value;
-            let banco = "Banco desconocido";
-            if (number.length >= 6) {
-                let bin = number.substring(0, 6);
-                if (bin === "415231" || bin === "450799" || bin === "455527") banco = "BBVA";
-                else if (bin === "557910" || bin === "557907") banco = "Santander";
-                else if (bin === "491566") banco = "BanCoppel";
-                else if (bin === "520416" || bin === "400744") banco = "Citibanamex";
-            }
-            document.getElementById("bancoDetectado").innerText = number.length > 5 ? "🏦 " + banco : "";
         });
-    </script>
+    }
+
+    if (cardExpiry) {
+        cardExpiry.addEventListener("input", function () {
+            let value = this.value.replace(/\D/g, "").substring(0, 4);
+
+            if (value.length >= 3) {
+                value = value.substring(0, 2) + "/" + value.substring(2);
+            }
+
+            this.value = value;
+        });
+
+        cardExpiry.addEventListener("blur", function () {
+            const parts = this.value.split("/");
+            const month = parseInt(parts[0], 10);
+
+            if (parts.length !== 2 || month < 1 || month > 12) {
+                alert("La fecha debe tener formato MM/AA y un mes válido.");
+                this.value = "";
+            }
+        });
+    }
+
+    if (cardCvv) {
+        cardCvv.addEventListener("input", function () {
+            const tipo = cardType ? cardType.textContent : "Tarjeta";
+            const max = tipo === "Amex" ? 4 : 3;
+            this.value = this.value.replace(/\D/g, "").substring(0, max);
+        });
+    }
+</script>
 {% endblock %}

@@ -16,7 +16,9 @@ from .models import Usuario, Plan, Suscripcion, UsuarioGeneroPreferencia
 from apps.movies.models import Genero, Pelicula
 from collections import Counter
 from apps.interactions.models import Favorite, Watchlist, HistorialVisita
+from django.shortcuts import render
 
+from .recommendation_engine import obtener_recomendaciones_para_usuario
 
 def login_view(request):
     context = {
@@ -260,83 +262,10 @@ def mi_mundo_view(request):
 
 @login_required
 def recomendaciones_view(request):
-    preferencias_actuales = list(
-        UsuarioGeneroPreferencia.objects.filter(
-            usuario=request.user
-        ).values_list('genero_id', flat=True)
+    recomendaciones, generos_relevantes = obtener_recomendaciones_para_usuario(
+        request.user,
+        limite=12
     )
-
-    peliculas_calificadas_ids = list(
-        Calificacion.objects.filter(usuario=request.user).values_list('pelicula_id', flat=True)
-    )
-
-    favoritos_ids = list(
-        Favorite.objects.filter(user=request.user).values_list('movie_id', flat=True)
-    )
-
-    watchlist_ids = list(
-        Watchlist.objects.filter(user=request.user).values_list('movie_id', flat=True)
-    )
-
-    visitas_ids = list(
-        HistorialVisita.objects.filter(usuario=request.user)
-        .order_by('-fecha_visita')
-        .values_list('pelicula_id', flat=True)
-    )
-
-    genero_scores = Counter()
-
-    for genero_id in preferencias_actuales:
-        genero_scores[genero_id] += 4
-
-    peliculas_favoritas = Pelicula.objects.filter(
-        id_pelicula__in=favoritos_ids
-    ).prefetch_related('generos')
-    for pelicula in peliculas_favoritas:
-        for genero in pelicula.generos.all():
-            genero_scores[genero.id_genero] += 3
-
-    peliculas_watchlist = Pelicula.objects.filter(
-        id_pelicula__in=watchlist_ids
-    ).prefetch_related('generos')
-    for pelicula in peliculas_watchlist:
-        for genero in pelicula.generos.all():
-            genero_scores[genero.id_genero] += 2
-
-    peliculas_visitadas = Pelicula.objects.filter(
-        id_pelicula__in=visitas_ids
-    ).prefetch_related('generos')
-    for pelicula in peliculas_visitadas:
-        for genero in pelicula.generos.all():
-            genero_scores[genero.id_genero] += 1
-
-    genero_ids_relevantes = list(genero_scores.keys())
-
-    recomendaciones = []
-    generos_relevantes = []
-
-    if genero_ids_relevantes:
-        recomendaciones = (
-            Pelicula.objects
-            .prefetch_related('generos', 'directores')
-            .annotate(
-                promedio_calificacion=Avg('calificacion'),
-                total_calificaciones=Count('calificacion'),
-                coincidencias_genero=Count(
-                    'generos',
-                    filter=Q(generos__id_genero__in=genero_ids_relevantes),
-                    distinct=True
-                )
-            )
-            .filter(generos__id_genero__in=genero_ids_relevantes)
-            .exclude(id_pelicula__in=peliculas_calificadas_ids)
-            .distinct()
-            .order_by('-coincidencias_genero', '-promedio_calificacion', 'nombre')
-        )
-
-        generos_relevantes = Genero.objects.filter(
-            id_genero__in=genero_ids_relevantes
-        ).order_by('nombre')
 
     return render(request, 'recomendaciones.html', {
         'recomendaciones': recomendaciones,
@@ -359,3 +288,6 @@ def cambiar_contrasena_view(request):
     return render(request, 'cambiar_contrasena.html', {
         'form': form
     })
+
+def terminos_view(request):
+    return render(request, 'terminos.html')

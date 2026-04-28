@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .terms-page {
+        max-width: 980px;
+        margin: 40px auto;
+        padding-bottom: 60px;
+    }
+
+    .terms-card {
+        background: #111827;
+        border: 1px solid #232b3b;
+        border-radius: 24px;
+        padding: 34px;
+        color: #e5e7eb;
+        line-height: 1.65;
+    }
+
+    .terms-card h1 {
+        font-size: 34px;
+        margin-bottom: 18px;
+        color: #fff;
+    }
+
+    .terms-card h2 {
+        font-size: 24px;
+        margin-top: 28px;
+        margin-bottom: 12px;
+        color: #fff;
+    }
+
+    .terms-card h3 {
+        font-size: 18px;
+        margin-top: 22px;
+        margin-bottom: 10px;
+        color: #facc15;
+    }
+
+    .terms-card p {
+        margin-bottom: 16px;
+    }
+
+    .terms-card strong {
+        color: #fff;
+    }
+
+    .terms-card ul {
+        margin: 10px 0 18px 24px;
+    }
+
+
+    .terms-separator {
+        border: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        margin: 34px 0;
+    }
+
+    @media (max-width: 700px) {
+        .terms-card {
+            padding: 22px;
+        }
+
+        .signature-row {
+            grid-template-columns: 1fr;
+            gap: 34px;
+        }
+    }
+
+    .back-terms-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-weight: 700;
+        margin-bottom: 18px;
+        text-decoration: none;
+        transition: 0.2s ease;
+    }
+
+    .back-terms-btn:hover {
+        background: rgba(255, 255, 255, 0.14);
+        transform: translateY(-1px);
+    }
+
+    .terms-intro {
+        color: #cfd7e2;
+        margin-bottom: 24px;
+        line-height: 1.7;
+    }
+
+    .terms-actions {
+        margin-top: 34px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .back-terms-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: #e50914;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #fff;
+        padding: 14px 24px;
+        border-radius: 12px;
+        font-weight: 800;
+        text-decoration: none;
+        transition: 0.2s ease;
+        min-width: 280px;
+        text-align: center;
+    }
+
+    .back-terms-btn:hover {
+        background: #c40812;
+        transform: translateY(-1px);
+    }
+</style>
+
+<div class="container terms-page">
+    <div class="terms-card">
+        <h1>Términos y Condiciones de TECMOVIE</h1>
+        <p class="terms-intro">
+            Al crear una cuenta o contratar una suscripción, aceptas las condiciones de uso, cobro,
+            cancelación, privacidad y publicidad descritas en este documento.
+        </p>
+
+        <h2>Contrato De Suscripciones</h2>
+
+        <h3>CONTRATO 1: PLAN BÁSICO ($79.00 MXN)</h3>
+        <p><strong>CONTRATO DE ADHESIÓN A SERVICIOS DIGITALES - PLAN BÁSICO</strong></p>
+
+        <p><strong>CLÁUSULA PRIMERA. OBJETO.</strong> El Sistema otorga al Usuario el derecho de acceso a la plataforma
+            en modalidad "Básica", la cual incluye: (a) Búsqueda ilimitada en el catálogo cinematográfico; (b)
+            Eliminación total de anuncios publicitarios; (c) Acceso a rankings y valoraciones generales de la comunidad.
+            El uso está limitado a <strong>1 dispositivo</strong> de forma simultánea.</p>
+
+        <p><strong>CLÁUSULA SEGUNDA. CARGOS Y PAGOS RECURRENTES.</strong> El Usuario acepta el costo mensual de
+            <strong>$79.00 MXN</strong>. Al aceptar estos términos, autoriza expresamente la domiciliación bancaria para
+            que se realicen cargos automáticos y recurrentes a la tarjeta de crédito o débito proporcionada cada 30 días
+            naturales. El servicio se renovará automáticamente hasta que se solicite la cancelación.
+        </p>
+
+        <p><strong>CLÁUSULA TERCERA. CANCELACIÓN Y REEMBOLSOS.</strong> El Usuario puede cancelar su suscripción en
+            cualquier momento desde los ajustes de su perfil. La cancelación detendrá los cargos futuros, pero el acceso
+            se mantendrá activo hasta el fin del periodo ya pagado. No se realizarán reembolsos por periodos parciales o
+            meses ya cobrados.</p>
+
+        <p><strong>CLÁUSULA CUARTA. RESPONSABILIDAD.</strong> El Usuario es responsable de mantener fondos suficientes
+            para los cargos mensuales. La falta de pago resultará en la suspensión inmediata de los beneficios del Plan
+            Básico.</p>
+
+
+
+        <hr class="terms-separator">
+
+        <h3>CONTRATO 2: PLAN PREMIUM ($99.00 MXN)</h3>
+        <p><strong>CONTRATO DE ADHESIÓN A SERVICIOS DIGITALES - PLAN PREMIUM</strong></p>
+
+        <p><strong>CLÁUSULA PRIMERA. OBJETO.</strong> El Sistema otorga al Usuario acceso a la modalidad "Premium", que
+            incluye: (a) Todos los beneficios del plan básico; (b) Sistema de Recomendación Personalizada basado en
+            algoritmos de preferencia; (c) Acceso a reseñas premium y críticas especializadas; (d) Acceso anticipado a
+            nuevas funciones. El uso se permite en hasta 2 dispositivos simultáneos.</p>
+
+        <p><strong>CLÁUSULA SEGUNDA. CARGOS Y PAGOS RECURRENTES.</strong> El Usuario acepta el costo mensual de
+            <strong>$99.00 MXN</strong>. Al aceptar estos términos, autoriza expresamente la domiciliación bancaria para
+            que se realicen cargos automáticos y recurrentes a la tarjeta proporcionada cada 30 días naturales. El
+            servicio se renovará automáticamente.
+        </p>
+
+        <p><strong>CLÁUSULA TERCERA. PRIVACIDAD Y ALGORITMOS.</strong> Para la ejecución de las recomendaciones
+            personalizadas, el Usuario autoriza el análisis de su historial de navegación y preferencias dentro de la
+            plataforma. El Sistema garantiza la confidencialidad de estos datos conforme a la normativa vigente.</p>
+
+        <p><strong>CLÁUSULA CUARTA. CANCELACIÓN Y REEMBOLSOS.</strong> El Usuario puede cancelar en cualquier momento.
+            No se efectuarán devoluciones una vez procesado el cargo mensual. La cancelación surtirá efecto a partir del
+            siguiente ciclo de facturación.</p>
+
+        <hr class="terms-separator">
+
+        <h3>CONTRATO 3: PLAN PREMIUM PLUS ($129.00 MXN)</h3>
+        <p><strong>CONTRATO DE ADHESIÓN A SERVICIOS DIGITALES - PLAN PREMIUM PLUS</strong></p>
+
+        <p><strong>CLÁUSULA PRIMERA. OBJETO.</strong> El Sistema otorga acceso a la modalidad "Premium Plus" Familiar,
+            diseñada para el uso compartido. Incluye: (a) Creación de hasta 4 perfiles independientes con
+            recomendaciones personalizadas para cada uno; (b) Publicación ilimitada de reseñas; (c) Acceso total a
+            enlaces de redirección a streaming. Permite hasta 4 reproducciones simultáneas en diferentes dispositivos.
+        </p>
+
+        <p><strong>CLÁUSULA SEGUNDA. CARGOS Y PAGOS RECURRENTES.</strong> El Usuario titular acepta el costo mensual de
+            <strong>$129.00 MXN</strong>. Al aceptar estos términos, autoriza expresamente la domiciliación bancaria
+            para cargos automáticos y recurrentes cada 30 días naturales. El titular es el único responsable legal del
+            pago de la cuenta y sus perfiles asociados.
+        </p>
+
+        <p><strong>CLÁUSULA TERCERA. CANCELACIÓN Y REEMBOLSOS.</strong> El Usuario puede cancelar la suscripción
+            familiar en cualquier momento. La cancelación desactiva la renovación automática de todos los perfiles
+            vinculados. No existen reembolsos parciales por meses en curso.</p>
+
+        <p><strong>CLÁUSULA CUARTA. USO CORRECTO.</strong> El titular se compromete a que el uso de los perfiles
+            adicionales se mantenga dentro del ámbito permitido. El Sistema se reserva el derecho de suspender la cuenta
+            si se detecta un uso indebido o falta de pago en el ciclo correspondiente.</p>
+
+
+
+        <hr class="terms-separator">
+
+        <h2>CONTRATO DE PRESTACIÓN DE SERVICIOS DE PUBLICIDAD DIGITAL</h2>
+
+        <p><strong>CLÁUSULA PRIMERA. OBJETO DEL CONTRATO.</strong> El SISTEMA se obliga a prestar servicios de difusión
+            publicitaria al ANUNCIANTE dentro de su plataforma web. Esto incluye la exhibición de material gráfico,
+            banners o contenido patrocinado en las secciones destinadas a usuarios del plan gratuito Freemium.</p>
+
+        <p><strong>CLÁUSULA SEGUNDA. ESPECIFICACIONES DE LOS 4 PILARES.</strong> El SISTEMA garantiza que la publicidad
+            será integrada de forma estratégica sin afectar las funciones principales del software:</p>
+
+        <ul>
+            <li><strong>Búsqueda:</strong> Los anuncios aparecerán de forma no intrusiva en los resultados de búsqueda.
+            </li>
+            <li><strong>Redirección:</strong> Se podrán incluir enlaces patrocinados hacia servicios legales de
+                streaming asociados.</li>
+            <li><strong>Recomendación:</strong> El ANUNCIANTE podrá solicitar que su contenido aparezca como "Sugerido"
+                dentro de los algoritmos de recomendación general.</li>
+            <li><strong>Reseñas:</strong> Los espacios publicitarios se ubicarán en las secciones de comentarios y
+                valoraciones de la comunidad.</li>
+        </ul>
+
+        <p><strong>CLÁUSULA TERCERA. PRECIO Y FORMA DE PAGO.</strong> Las partes acordarán una tarifa basada en:</p>
+
+        <ul>
+            <li><strong>CPM:</strong> Costo por mil impresiones. Pago por cada mil veces que el anuncio sea visto.</li>
+            <li><strong>CPC:</strong> Costo por clic. Pago por cada usuario que interactúe con el anuncio.</li>
+        </ul>
+
+        <p>El pago se realizará mediante transferencia bancaria o cargo automático de forma mensual vencida, previa
+            entrega de la factura correspondiente.</p>
+
+        <p><strong>CLÁUSULA CUARTA. OBLIGACIONES DEL ANUNCIANTE.</strong> El ANUNCIANTE es el único responsable del
+            contenido, legalidad y veracidad de la publicidad proporcionada. El SISTEMA se reserva el derecho de
+            rechazar anuncios que promuevan la piratería o contenido inapropiado que dañe la reputación de la
+            plataforma.</p>
+
+        <p><strong>CLÁUSULA QUINTA. MÉTRICAS Y REPORTES.</strong> El SISTEMA entregará mensualmente al ANUNCIANTE un
+            reporte detallado con el número de impresiones, clics y tasa de conversión lograda, con el fin de justificar
+            la inversión realizada.</p>
+
+        <p><strong>CLÁUSULA SEXTA. DURACIÓN Y RESCISIÓN.</strong> El presente contrato tendrá una vigencia de [X meses].
+            Cualquiera de las partes podrá dar por terminado el contrato con un aviso previo de 15 días naturales. En
+            caso de incumplimiento de pago por parte del ANUNCIANTE, el SISTEMA retirará la publicidad de inmediato.</p>
+
+        <p><strong>CLÁUSULA SÉPTIMA. CONFIDENCIALIDAD.</strong> Ambas partes se obligan a mantener en estricta
+            confidencialidad los datos de tráfico, costos y estrategias comerciales derivadas de este acuerdo por un
+            periodo de dos años posteriores a su finalización.</p>
+
+        <div class="terms-actions">
+            <a href="{% url 'users:login' %}?terminos_aceptados=1" class="back-terms-btn">
+                <i class="fas fa-check"></i>
+                <span>He leído y acepto los términos</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
