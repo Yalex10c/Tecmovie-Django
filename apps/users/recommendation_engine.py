@@ -7,18 +7,28 @@ from apps.interactions.models import Favorite, Watchlist, HistorialVisita
 from apps.users.models import UsuarioGeneroPreferencia
 
 
-def _sumar_peso_pelicula(pelicula, pesos_generos, pesos_directores, pesos_actores, pesos_plataformas, peso):
+def _sumar_peso_pelicula(
+    pelicula,
+    pesos_generos,
+    pesos_directores,
+    pesos_actores,
+    pesos_plataformas,
+    peso_genero,
+    peso_director,
+    peso_actor,
+    peso_plataforma,
+):
     for genero in pelicula.generos.all():
-        pesos_generos[genero.id_genero] += peso
+        pesos_generos[genero.id_genero] += peso_genero
 
     for director in pelicula.directores.all():
-        pesos_directores[director.id_director] += peso
+        pesos_directores[director.id_director] += peso_director
 
     for actor in pelicula.actores.all():
-        pesos_actores[actor.id_actor] += peso
+        pesos_actores[actor.id_actor] += peso_actor
 
     for plataforma in pelicula.plataformas.all():
-        pesos_plataformas[plataforma.id_plataforma] += max(1, peso // 2)
+        pesos_plataformas[plataforma.id_plataforma] += peso_plataforma
 
 
 def obtener_recomendaciones_para_usuario(usuario, limite=12):
@@ -69,7 +79,7 @@ def obtener_recomendaciones_para_usuario(usuario, limite=12):
     actores_negativos = Counter()
 
     for genero_id in preferencias_ids:
-        pesos_generos[genero_id] += 8
+        pesos_generos[genero_id] += 5
 
     peliculas_positivas = (
         Pelicula.objects
@@ -79,13 +89,43 @@ def obtener_recomendaciones_para_usuario(usuario, limite=12):
 
     for pelicula in peliculas_positivas:
         if pelicula.id_pelicula in likes_ids:
-            _sumar_peso_pelicula(pelicula, pesos_generos, pesos_directores, pesos_actores, pesos_plataformas, 10)
+            _sumar_peso_pelicula(
+                pelicula,
+                pesos_generos,
+                pesos_directores,
+                pesos_actores,
+                pesos_plataformas,
+                peso_genero=7,
+                peso_director=12,
+                peso_actor=10,
+                peso_plataforma=3,
+            )
 
         if pelicula.id_pelicula in favoritos_ids:
-            _sumar_peso_pelicula(pelicula, pesos_generos, pesos_directores, pesos_actores, pesos_plataformas, 8)
+            _sumar_peso_pelicula(
+                pelicula,
+                pesos_generos,
+                pesos_directores,
+                pesos_actores,
+                pesos_plataformas,
+                peso_genero=6,
+                peso_director=10,
+                peso_actor=8,
+                peso_plataforma=3,
+            )
 
         if pelicula.id_pelicula in watchlist_ids:
-            _sumar_peso_pelicula(pelicula, pesos_generos, pesos_directores, pesos_actores, pesos_plataformas, 5)
+            _sumar_peso_pelicula(
+                pelicula,
+                pesos_generos,
+                pesos_directores,
+                pesos_actores,
+                pesos_plataformas,
+                peso_genero=4,
+                peso_director=6,
+                peso_actor=5,
+                peso_plataforma=2,
+            )
 
     peliculas_visitadas = (
         Pelicula.objects
@@ -94,7 +134,17 @@ def obtener_recomendaciones_para_usuario(usuario, limite=12):
     )
 
     for pelicula in peliculas_visitadas:
-        _sumar_peso_pelicula(pelicula, pesos_generos, pesos_directores, pesos_actores, pesos_plataformas, 2)
+        _sumar_peso_pelicula(
+            pelicula,
+            pesos_generos,
+            pesos_directores,
+            pesos_actores,
+            pesos_plataformas,
+            peso_genero=2,
+            peso_director=3,
+            peso_actor=3,
+            peso_plataforma=1,
+        )
 
     peliculas_dislike = (
         Pelicula.objects
