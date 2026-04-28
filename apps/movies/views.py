@@ -1,5 +1,5 @@
 from django.core.paginator import Paginator
-from django.db.models import Avg, Count, Q
+from django.db.models import Avg, Count, Q, F, IntegerField, ExpressionWrapper
 from django.shortcuts import render, get_object_or_404, redirect
 
 from django.utils import timezone
@@ -84,6 +84,22 @@ def detalle_pelicula(request, id):
         Pelicula.objects.prefetch_related('generos', 'directores', 'actores', 'plataformas'),
         pk=id
     )
+
+    if request.user.is_authenticated:
+        hace_24_horas = timezone.now() - timezone.timedelta(hours=24)
+
+        visita_reciente = HistorialVisita.objects.filter(
+            usuario=request.user,
+            pelicula=pelicula,
+            fecha_visita__gte=hace_24_horas
+        ).exists()
+
+        if not visita_reciente:
+            HistorialVisita.objects.create(
+                usuario=request.user,
+                pelicula=pelicula,
+                fecha_visita=timezone.now()
+            )
 
     if request.method == 'POST' and request.user.is_authenticated and request.user.can_interact:
         comentario = request.POST.get('comentario')
@@ -243,19 +259,34 @@ def tendencias_peliculas(request):
     )
 
     mas_visitadas_semana = (
-        Pelicula.objects
-        .prefetch_related('generos', 'directores')
-        .annotate(
-            visitas_semana=Count(
-                'visitas_usuario',
-                filter=Q(visitas_usuario__fecha_visita__gte=hace_7_dias)
-            ),
-            total_likes=Count('calificacion', filter=Q(calificacion__reaccion='like')),
-            total_dislikes=Count('calificacion', filter=Q(calificacion__reaccion='dislike'))
+    Pelicula.objects
+    .prefetch_related('generos', 'directores')
+    .annotate(
+        visitas_semana=Count(
+            'visitas_usuario',
+            filter=Q(visitas_usuario__fecha_visita__gte=hace_7_dias),
+            distinct=True
+        ),
+        total_likes=Count(
+            'calificacion',
+            filter=Q(calificacion__reaccion='like'),
+            distinct=True
+        ),
+        total_dislikes=Count(
+            'calificacion',
+            filter=Q(calificacion__reaccion='dislike'),
+            distinct=True
         )
-        .filter(visitas_semana__gt=0)
-        .order_by('-visitas_semana', '-total_likes', 'total_dislikes', 'nombre')[:12]
     )
+    .filter(visitas_semana__gt=0)
+    .annotate(
+        puntaje_tendencia=ExpressionWrapper(
+            F('visitas_semana') * 3 + F('total_likes') * 2 - F('total_dislikes'),
+            output_field=IntegerField()
+        )
+    )
+    .order_by('-puntaje_tendencia', '-visitas_semana', '-total_likes', 'total_dislikes', 'nombre')[:12]
+)
 
     principal_tendencia = mas_visitadas_semana[0] if mas_visitadas_semana else None
 
