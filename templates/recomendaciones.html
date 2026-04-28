@@ -8,11 +8,10 @@
 
     .recommend-hero {
         background: linear-gradient(135deg, rgba(229, 9, 20, 0.18), rgba(90, 90, 255, 0.16), rgba(0, 200, 255, 0.14));
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255,255,255,0.08);
         border-radius: 28px;
         padding: 32px;
         margin-bottom: 28px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
     }
 
     .recommend-title-main {
@@ -26,7 +25,7 @@
         color: #d0d7e2;
         font-size: 16px;
         line-height: 1.6;
-        max-width: 850px;
+        max-width: 900px;
     }
 
     .recommend-tags {
@@ -37,12 +36,126 @@
     }
 
     .recommend-tag {
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.08);
         color: #fff;
         padding: 10px 14px;
         border-radius: 999px;
-        font-weight: 600;
+        font-weight: 700;
+    }
+
+    .featured-recommend {
+        position: relative;
+        overflow: hidden;
+        background: #111827;
+        border: 1px solid rgba(250, 204, 21, 0.28);
+        border-radius: 28px;
+        padding: 24px;
+        margin-bottom: 28px;
+        box-shadow: 0 0 30px rgba(250, 204, 21, 0.10);
+    }
+
+    .featured-recommend::before {
+        content: "";
+        position: absolute;
+        inset: -40%;
+        background:
+            radial-gradient(circle at 20% 50%, rgba(250,204,21,0.22), transparent 30%),
+            radial-gradient(circle at 70% 40%, rgba(255,220,120,0.16), transparent 30%),
+            radial-gradient(circle at 45% 80%, rgba(255,180,40,0.12), transparent 32%);
+        filter: blur(20px);
+        animation: goldGlow 3.4s ease-in-out infinite alternate;
+        pointer-events: none;
+    }
+
+    .featured-recommend::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -130%;
+        width: 120%;
+        height: 100%;
+        background: linear-gradient(120deg,
+            transparent 0%,
+            rgba(255,255,255,0.04) 35%,
+            rgba(255,236,160,0.25) 50%,
+            transparent 65%);
+        animation: goldShimmer 2.5s linear infinite;
+        pointer-events: none;
+    }
+
+    .featured-inner {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 26px;
+        align-items: center;
+    }
+
+    .featured-poster {
+        width: 100%;
+        height: 420px;
+        object-fit: cover;
+        border-radius: 22px;
+        border: 1px solid rgba(255,255,255,0.10);
+        background: #0b1220;
+    }
+
+    .featured-label {
+        color: #facc15;
+        font-weight: 900;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .featured-title {
+        color: #fff;
+        font-size: 42px;
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 14px;
+    }
+
+    .featured-meta {
+        color: #cfd7e2;
+        font-size: 15px;
+        margin-bottom: 18px;
+    }
+
+    .featured-reason {
+        color: #d9e2ee;
+        line-height: 1.7;
+        margin-bottom: 18px;
+        max-width: 760px;
+    }
+
+    .featured-stats {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .stat-pill {
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .featured-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: #e50914;
+        color: white;
+        padding: 13px 18px;
+        border-radius: 12px;
+        font-weight: 900;
+        text-decoration: none;
     }
 
     .recommend-section-card {
@@ -58,44 +171,58 @@
         color: #fff;
     }
 
-    .recommend-grid-full {
+    .recommend-carousel {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-auto-flow: column;
+        grid-auto-columns: 260px;
         gap: 18px;
+        overflow-x: auto;
+        padding-bottom: 12px;
+        scroll-snap-type: x mandatory;
     }
 
-    .recommend-card-full {
-        background: #111827;
+    .recommend-carousel::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .recommend-carousel::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.16);
+        border-radius: 999px;
+    }
+
+    .recommend-card {
+        scroll-snap-align: start;
+        background: #0f1724;
         border: 1px solid #232b3b;
         border-radius: 18px;
         overflow: hidden;
         cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition: 0.2s ease;
     }
 
-    .recommend-card-full:hover {
+    .recommend-card:hover {
         transform: translateY(-4px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        border-color: rgba(250,204,21,0.35);
     }
 
-    .recommend-poster-full {
+    .recommend-poster {
         width: 100%;
-        height: 260px;
+        height: 300px;
         object-fit: cover;
         display: block;
         background: #0b1220;
     }
 
-    .recommend-body-full {
+    .recommend-body {
         padding: 14px;
     }
 
     .recommend-title {
         color: #fff;
         font-size: 16px;
-        font-weight: 700;
-        margin-bottom: 6px;
+        font-weight: 800;
         line-height: 1.3;
+        margin-bottom: 8px;
     }
 
     .recommend-meta {
@@ -105,36 +232,51 @@
         margin-bottom: 10px;
     }
 
-    .recommend-rating {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        color: #facc15;
-        font-weight: 700;
-        font-size: 14px;
+    .recommend-reason {
+        color: #9da8b7;
+        font-size: 12px;
+        line-height: 1.4;
+        margin-top: 8px;
+    }
+
+    .affinity {
+        color: #6ee7b7;
+        font-size: 12px;
+        font-weight: 900;
+        margin-top: 6px;
     }
 
     .empty-box {
         color: #aab3c0;
         line-height: 1.6;
-        background: rgba(255, 255, 255, 0.04);
+        background: rgba(255,255,255,0.04);
         border-radius: 16px;
         padding: 20px;
     }
 
-    @media (max-width: 900px) {
-        .recommend-grid-full {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .recommend-title-main {
-            font-size: 34px;
-        }
+    @keyframes goldGlow {
+        0% { transform: translateX(-5%) translateY(0) scale(1); opacity: 0.55; }
+        50% { transform: translateX(5%) translateY(-4%) scale(1.04); opacity: 0.85; }
+        100% { transform: translateX(8%) translateY(2%) scale(1.02); opacity: 0.65; }
     }
 
-    @media (max-width: 600px) {
-        .recommend-grid-full {
+    @keyframes goldShimmer {
+        0% { left: -130%; }
+        100% { left: 130%; }
+    }
+
+    @media (max-width: 900px) {
+        .featured-inner {
             grid-template-columns: 1fr;
+        }
+
+        .featured-poster {
+            max-width: 320px;
+            height: 420px;
+        }
+
+        .featured-title {
+            font-size: 32px;
         }
     }
 </style>
@@ -143,8 +285,9 @@
     <section class="recommend-hero">
         <h1 class="recommend-title-main">Recomendaciones para ti</h1>
         <p class="recommend-subtitle">
-            Estas sugerencias se generan usando tus géneros favoritos, tus películas guardadas,
-            tu watchlist y las películas que has visitado recientemente.
+            Estas sugerencias se calculan analizando tus géneros favoritos, likes, dislikes,
+            favoritos, watchlist, historial de visitas y conexiones entre películas, actores,
+            directores y plataformas.
         </p>
 
         {% if generos_relevantes %}
@@ -156,62 +299,103 @@
         {% endif %}
     </section>
 
-    <section class="recommend-section-card">
-        <h2>Películas recomendadas</h2>
-
-        {% if recomendaciones %}
-        <div class="recommend-grid-full">
-            {% for movie in recomendaciones %}
-            <div class="recommend-card-full" onclick="window.location.href='/pelicula/{{ movie.id_pelicula }}/'">
-                {% if movie.imagen_url %}
-                <img src="{{ movie.imagen_url }}" alt="{{ movie.nombre }}" class="recommend-poster-full">
+    {% if recomendaciones %}
+        {% with principal=recomendaciones.0 %}
+        <section class="featured-recommend" onclick="window.location.href='/pelicula/{{ principal.id_pelicula }}/'">
+            <div class="featured-inner">
+                {% if principal.imagen_url %}
+                <img src="{{ principal.imagen_url }}" alt="{{ principal.nombre }}" class="featured-poster">
                 {% else %}
-                <img src="https://api.dicebear.com/7.x/identicon/svg?seed={{ movie.nombre|urlencode }}"
-                    alt="{{ movie.nombre }}" class="recommend-poster-full">
+                <img src="https://api.dicebear.com/7.x/identicon/svg?seed={{ principal.nombre|urlencode }}"
+                    alt="{{ principal.nombre }}" class="featured-poster">
                 {% endif %}
 
-                <div class="recommend-body-full">
-                    <div class="recommend-title">{{ movie.nombre }}</div>
+                <div>
+                    <div class="featured-label">🏆 Mejor recomendación para ti</div>
+                    <h2 class="featured-title">{{ principal.nombre }}</h2>
 
-                    <div class="recommend-meta">
-                        {% for genero in movie.generos.all|slice:":3" %}
+                    <div class="featured-meta">
+                        {% for genero in principal.generos.all|slice:":3" %}
                         {{ genero.nombre }}{% if not forloop.last %}, {% endif %}
                         {% empty %}
                         Sin género
                         {% endfor %}
-                        • {{ movie.anio }}
+                        • {{ principal.anio }}
                     </div>
 
-                    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:8px;">
-                        <span style="color:#facc15; font-weight:700;">
-                            <i class="fas fa-thumbs-up"></i> {{ movie.total_likes|default:"0" }}
-                        </span>
-                        <span style="color:#ff9d9d; font-weight:700;">
-                            <i class="fas fa-thumbs-down"></i> {{ movie.total_dislikes|default:"0" }}
-                        </span>
-                    </div>
-                    {% if movie.motivo_recomendacion %}
-                    <div style="margin-top:10px; color:#9da8b7; font-size:12px; line-height:1.4;">
+                    <div class="featured-reason">
                         <i class="fas fa-wand-magic-sparkles" style="color:#facc15;"></i>
-                        {{ movie.motivo_recomendacion }}
+                        {{ principal.motivo_recomendacion|default:"Recomendación generada por tu perfil de afinidad." }}
                     </div>
-                    {% endif %}
 
-                    {% if movie.score_recomendacion %}
-                    <div style="margin-top:6px; color:#6ee7b7; font-size:12px; font-weight:700;">
-                        Afinidad: {{ movie.score_recomendacion }}%
+                    <div class="featured-stats">
+                        <span class="stat-pill">👍 {{ principal.total_likes|default:"0" }}</span>
+                        <span class="stat-pill">👎 {{ principal.total_dislikes|default:"0" }}</span>
+                        <span class="stat-pill">Afinidad {{ principal.score_recomendacion|default:"--" }}%</span>
                     </div>
-                    {% endif %}
+
+                    <a href="/pelicula/{{ principal.id_pelicula }}/" class="featured-btn">
+                        Ver película <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
             </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="empty-box">
-            Aún no hay suficientes señales para recomendarte películas. Agrega géneros a Mi Mundo,
-            visita más películas o guarda algunas en favoritos y watchlist.
-        </div>
-        {% endif %}
-    </section>
+        </section>
+        {% endwith %}
+
+        <section class="recommend-section-card">
+            <h2>Más recomendaciones</h2>
+
+            <div class="recommend-carousel">
+                {% for movie in recomendaciones|slice:"1:" %}
+                <div class="recommend-card" onclick="window.location.href='/pelicula/{{ movie.id_pelicula }}/'">
+                    {% if movie.imagen_url %}
+                    <img src="{{ movie.imagen_url }}" alt="{{ movie.nombre }}" class="recommend-poster">
+                    {% else %}
+                    <img src="https://api.dicebear.com/7.x/identicon/svg?seed={{ movie.nombre|urlencode }}"
+                        alt="{{ movie.nombre }}" class="recommend-poster">
+                    {% endif %}
+
+                    <div class="recommend-body">
+                        <div class="recommend-title">{{ movie.nombre }}</div>
+
+                        <div class="recommend-meta">
+                            {% for genero in movie.generos.all|slice:":2" %}
+                            {{ genero.nombre }}{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                            Sin género
+                            {% endfor %}
+                            • {{ movie.anio }}
+                        </div>
+
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <span style="color:#facc15; font-weight:800;">👍 {{ movie.total_likes|default:"0" }}</span>
+                            <span style="color:#ff9d9d; font-weight:800;">👎 {{ movie.total_dislikes|default:"0" }}</span>
+                        </div>
+
+                        {% if movie.motivo_recomendacion %}
+                        <div class="recommend-reason">
+                            <i class="fas fa-wand-magic-sparkles" style="color:#facc15;"></i>
+                            {{ movie.motivo_recomendacion }}
+                        </div>
+                        {% endif %}
+
+                        {% if movie.score_recomendacion %}
+                        <div class="affinity">
+                            Afinidad: {{ movie.score_recomendacion }}%
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% else %}
+        <section class="recommend-section-card">
+            <div class="empty-box">
+                Aún no hay suficientes señales para recomendarte películas. Agrega géneros a Mi Mundo,
+                visita más películas o guarda algunas en favoritos y watchlist.
+            </div>
+        </section>
+    {% endif %}
 </div>
 {% endblock %}
