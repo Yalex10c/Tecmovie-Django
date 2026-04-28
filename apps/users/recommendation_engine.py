@@ -224,11 +224,12 @@ def obtener_recomendaciones_para_usuario(usuario, limite=12):
         if pelicula.total_likes > 0:
             razones.append("tiene buena recepción")
 
-        if score > 0:
-            pelicula.score_recomendacion = round(score, 2)
+        if score >= 20:
+            afinidad = min(100, round((score / 80) * 100))
+
+            pelicula.score_recomendacion = afinidad
             pelicula.motivo_recomendacion = " · ".join(razones[:2]) if razones else "recomendación exploratoria"
             recomendaciones.append(pelicula)
-
     recomendaciones.sort(
         key=lambda p: (
             p.score_recomendacion,
