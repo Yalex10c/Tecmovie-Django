@@ -1,0 +1,520 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .settings-page {
+        padding-bottom: 50px;
+    }
+
+    .settings-hero {
+        background: linear-gradient(135deg, rgba(229, 9, 20, 0.18), rgba(90, 90, 255, 0.14), rgba(0, 200, 255, 0.12));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 28px;
+        padding: 32px;
+        margin-bottom: 28px;
+    }
+
+    .settings-title {
+        font-size: 40px;
+        font-weight: 900;
+        margin-bottom: 10px;
+    }
+
+    .settings-subtitle {
+        color: #cfd7e2;
+        line-height: 1.6;
+    }
+
+    .settings-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 24px;
+    }
+
+    .settings-card {
+        background: #111827;
+        border: 1px solid #232b3b;
+        border-radius: 22px;
+        padding: 24px;
+        margin-bottom: 24px;
+    }
+
+    .settings-card h2 {
+        font-size: 24px;
+        margin-bottom: 18px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 14px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        color: #9da8b7;
+    }
+
+    .info-value {
+        color: #fff;
+        font-weight: 800;
+        text-align: right;
+    }
+
+    .settings-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: #e50914;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-weight: 900;
+        margin-top: 16px;
+        cursor: pointer;
+    }
+
+    .secondary-btn {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .danger-btn {
+        background: rgba(229, 9, 20, 0.12);
+        color: #ff6b78;
+        border: 1px solid rgba(229, 9, 20, 0.25);
+    }
+
+    .payment-card {
+        background: linear-gradient(135deg, rgba(250, 204, 21, 0.16), rgba(229, 9, 20, 0.10), rgba(0, 180, 255, 0.10));
+        border: 1px solid rgba(250, 204, 21, 0.22);
+        border-radius: 20px;
+        padding: 22px;
+        margin-top: 12px;
+    }
+
+    .payment-number {
+        font-size: 22px;
+        font-weight: 900;
+        letter-spacing: 2px;
+        margin: 18px 0;
+    }
+
+    .stats-mini-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+    .mini-stat {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    .mini-stat strong {
+        display: block;
+        font-size: 24px;
+        margin-bottom: 6px;
+    }
+
+    .mini-stat span {
+        color: #9da8b7;
+        font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+        .settings-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .settings-input {
+        width: 100%;
+        padding: 13px 14px;
+        margin-bottom: 12px;
+        border-radius: 12px;
+        border: 1px solid #2c3648;
+        background: #0f1724;
+        color: #fff;
+        outline: none;
+    }
+
+    .settings-input:focus {
+        border-color: #e50914;
+    }
+
+    .custom-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 3000;
+        background: rgba(0, 0, 0, 0.72);
+        backdrop-filter: blur(8px);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .custom-modal-overlay.active {
+        display: flex;
+    }
+
+    .custom-modal {
+        width: min(440px, 92%);
+        background: #111827;
+        border: 1px solid #2b3446;
+        border-radius: 24px;
+        padding: 28px;
+        position: relative;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .custom-modal-close {
+        position: absolute;
+        top: 14px;
+        right: 16px;
+        background: transparent;
+        border: none;
+        color: #9da8b7;
+        font-size: 28px;
+        cursor: pointer;
+    }
+
+    .custom-modal-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 18px;
+        background: rgba(229, 9, 20, 0.14);
+        color: #ff6b78;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 16px;
+    }
+
+    .custom-modal h2 {
+        margin-bottom: 10px;
+    }
+
+    .custom-modal p {
+        color: #cfd7e2;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .custom-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .settings-messages {
+        margin-bottom: 22px;
+    }
+
+    .settings-alert {
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.28);
+        color: #86efac;
+        padding: 14px 16px;
+        border-radius: 16px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+</style>
+
+<div class="container settings-page">
+    <section class="settings-hero">
+        <h1 class="settings-title">Configuración</h1>
+        <p class="settings-subtitle">
+            Administra tu perfil, suscripción, método de pago y privacidad dentro de TECMOVIE.
+        </p>
+    </section>
+
+    {% if messages %}
+    <div class="settings-messages">
+        {% for message in messages %}
+        <div class="settings-alert {{ message.tags }}">
+            <i class="fas fa-check-circle"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="settings-grid">
+        <div>
+            <section class="settings-card">
+                <h2><i class="fas fa-user"></i> Perfil</h2>
+
+                <div class="info-row">
+                    <span class="info-label">Nombre</span>
+                    <span class="info-value">{{ request.user.first_name|default:request.user.username }}</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Correo</span>
+                    <span class="info-value">{{ request.user.email }}</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Usuario</span>
+                    <span class="info-value">{{ request.user.username }}</span>
+                </div>
+
+                <a href="{% url 'users:cambiar_contrasena' %}" class="settings-btn secondary-btn">
+                    <i class="fas fa-key"></i> Cambiar contraseña
+                </a>
+            </section>
+
+            <section class="settings-card">
+                <h2><i class="fas fa-crown"></i> Suscripción</h2>
+
+                <div class="info-row">
+                    <span class="info-label">Plan actual</span>
+                    <span class="info-value">{{ request.user.current_plan_name }}</span>
+                </div>
+
+                {% if suscripcion_actual %}
+                <div class="info-row">
+                    <span class="info-label">Inicio</span>
+                    <span class="info-value">{{ suscripcion_actual.fecha_inicio }}</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Finaliza</span>
+                    <span class="info-value">{{ suscripcion_actual.fecha_fin }}</span>
+                </div>
+                {% endif %}
+
+                <a href="{% url 'users:planes' %}" class="settings-btn">
+                    <i class="fas fa-arrow-up"></i> Cambiar plan
+                </a>
+            </section>
+        </div>
+
+        <div>
+            <section class="settings-card">
+                <h2><i class="fas fa-credit-card"></i> Método de pago</h2>
+
+                {% if metodo_pago %}
+                <div class="payment-card">
+                    <div style="color:#facc15; font-weight:900;">Tarjeta registrada</div>
+                    <div class="payment-number">
+                        **** **** **** {{ metodo_pago.numero_tarjeta|slice:"-4:" }}
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Titular</span>
+                        <span class="info-value">{{ metodo_pago.nombre_tarjeta }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Expira</span>
+                        <span class="info-value">{{ metodo_pago.fecha_expiracion }}</span>
+                    </div>
+                </div>
+                {% else %}
+                <p style="color:#aab3c0; line-height:1.6;">
+                    No tienes un método de pago guardado. Se podrá registrar cuando contrates un plan.
+                </p>
+                {% endif %}
+
+                <button class="settings-btn secondary-btn" onclick="abrirPagoModal()">
+                    <i class="fas fa-pen"></i> Actualizar método de pago
+                </button>
+            </section>
+
+            <section class="settings-card">
+                <h2><i class="fas fa-shield-alt"></i> Privacidad y actividad</h2>
+
+                <div class="stats-mini-grid">
+                    <div class="mini-stat">
+                        <strong>{{ favoritas_count }}</strong>
+                        <span>Favoritas</span>
+                    </div>
+
+                    <div class="mini-stat">
+                        <strong>{{ watchlist_count }}</strong>
+                        <span>Watchlist</span>
+                    </div>
+
+                    <div class="mini-stat">
+                        <strong>{{ historial_count }}</strong>
+                        <span>Visitas</span>
+                    </div>
+                </div>
+
+                <form method="POST" action="{% url 'users:borrar_historial' %}" style="margin-top:16px;">
+                    {% csrf_token %}
+                    <button type="button" class="settings-btn danger-btn" onclick="abrirModalVistas()">
+                        <i class="fas fa-eye-slash"></i> Ocultar vistas recientes
+                    </button>
+                </form>
+                <p style="color:#9da8b7; font-size:13px; line-height:1.5; margin-top:12px;">
+                    Esta acción solo limpia la sección “Vistas recientemente” de Mi Mundo. No borra tus likes,
+                    favoritos, watchlist ni señales internas del sistema.
+                </p>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div id="paymentModal"
+    style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.72); backdrop-filter:blur(8px); z-index:2000; align-items:center; justify-content:center;">
+    <div
+        style="background:#111827; border:1px solid #232b3b; border-radius:22px; padding:28px; width:90%; max-width:430px; position:relative;">
+        <span onclick="cerrarPagoModal()"
+            style="position:absolute; right:18px; top:14px; font-size:26px; cursor:pointer; color:#aab3c0;">&times;</span>
+
+        <h2 style="margin-bottom:10px;">Actualizar método de pago</h2>
+        <p style="color:#9da8b7; margin-bottom:20px;">
+            Por seguridad solo se guardarán los últimos 4 dígitos.
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_payment">
+
+            <input class="settings-input" type="text" name="nombre_tarjeta" placeholder="Nombre en la tarjeta" required>
+
+            <div style="position:relative;">
+                <input class="settings-input" type="text" name="numero_tarjeta" id="configCardNumber"
+                    placeholder="Número de tarjeta" inputmode="numeric" maxlength="19" required>
+
+                <span id="configCardType"
+                    style="position:absolute; right:12px; top:14px; color:#facc15; font-weight:900; font-size:13px;">
+                    Tarjeta
+                </span>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <input class="settings-input" type="text" name="fecha_expiracion" id="configCardExpiry"
+                    placeholder="MM/AA" inputmode="numeric" maxlength="5" required>
+
+                <input class="settings-input" type="text" id="configCardCvv" placeholder="CVV" inputmode="numeric"
+                    maxlength="4" required>
+            </div>
+
+            <button type="submit" class="settings-btn" style="width:100%;">
+                Guardar método de pago
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function abrirPagoModal() {
+        document.getElementById("paymentModal").style.display = "flex";
+    }
+
+    function cerrarPagoModal() {
+        document.getElementById("paymentModal").style.display = "none";
+    }
+
+    const configCardNumber = document.getElementById("configCardNumber");
+    const configCardType = document.getElementById("configCardType");
+    const configCardExpiry = document.getElementById("configCardExpiry");
+    const configCardCvv = document.getElementById("configCardCvv");
+
+    function detectarTipoTarjeta(numero) {
+        const clean = numero.replace(/\D/g, "");
+
+        if (/^4/.test(clean)) return "VISA";
+        if (/^5[1-5]/.test(clean) || /^2[2-7]/.test(clean)) return "Mastercard";
+        if (/^3[47]/.test(clean)) return "Amex";
+        if (/^6(?:011|5)/.test(clean)) return "Discover";
+
+        return "Tarjeta";
+    }
+
+    if (configCardNumber) {
+        configCardNumber.addEventListener("input", function () {
+            let value = this.value.replace(/\D/g, "").substring(0, 16);
+            this.value = value.replace(/(.{4})/g, "$1 ").trim();
+
+            const tipo = detectarTipoTarjeta(value);
+            configCardType.textContent = tipo;
+
+            if (tipo === "Amex") {
+                configCardCvv.maxLength = 4;
+            } else {
+                configCardCvv.maxLength = 3;
+                configCardCvv.value = configCardCvv.value.substring(0, 3);
+            }
+        });
+    }
+
+    if (configCardExpiry) {
+        configCardExpiry.addEventListener("input", function () {
+            let value = this.value.replace(/\D/g, "").substring(0, 4);
+
+            if (value.length >= 3) {
+                value = value.substring(0, 2) + "/" + value.substring(2);
+            }
+
+            this.value = value;
+        });
+    }
+
+    if (configCardCvv) {
+        configCardCvv.addEventListener("input", function () {
+            const tipo = configCardType ? configCardType.textContent : "Tarjeta";
+            const max = tipo === "Amex" ? 4 : 3;
+
+            this.value = this.value.replace(/\D/g, "").substring(0, max);
+        });
+    }
+</script>
+
+<div id="viewsModal" class="custom-modal-overlay">
+    <div class="custom-modal">
+        <button class="custom-modal-close" onclick="cerrarModalVistas()">×</button>
+
+        <div class="custom-modal-icon">
+            <i class="fas fa-eye-slash"></i>
+        </div>
+
+        <h2>Ocultar vistas recientes</h2>
+
+        <p>
+            Solo se limpiará la sección “Vistas recientemente” de Mi Mundo.
+            Tus recomendaciones, tendencias, favoritos, watchlist y likes no se borrarán.
+        </p>
+
+        <div class="custom-modal-actions">
+            <button type="button" class="settings-btn secondary-btn" onclick="cerrarModalVistas()">
+                Cancelar
+            </button>
+
+            <form method="POST" action="{% url 'users:borrar_historial' %}">
+                {% csrf_token %}
+                <button type="submit" class="settings-btn danger-btn">
+                    Sí, ocultar vistas
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function abrirModalVistas() {
+        document.getElementById("viewsModal").classList.add("active");
+    }
+
+    function cerrarModalVistas() {
+        document.getElementById("viewsModal").classList.remove("active");
+    }
+</script>
+{% endblock %}

@@ -11,4 +11,6 @@ urlpatterns = [
     path('recomendaciones/', views.recomendaciones_view, name='recomendaciones'),
     path('cambiar-contrasena/', views.cambiar_contrasena_view, name='cambiar_contrasena'),
     path('terminos/', views.terminos_view, name='terminos'),
+    path('configuracion/', views.configuracion_view, name='configuracion'),
+    path('borrar-historial/', views.borrar_historial_view, name='borrar_historial'),
 ]

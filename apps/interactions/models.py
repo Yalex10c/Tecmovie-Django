@@ -39,6 +39,7 @@ class HistorialVisita(models.Model):
         related_name='visitas_usuario'
     )
     fecha_visita = models.DateTimeField()
+    visible_en_historial = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'historial_visitas'
@@ -46,3 +47,4 @@ class HistorialVisita(models.Model):
 
     def __str__(self):
         return f"{self.usuario.username} vio {self.pelicula.nombre}"
+    

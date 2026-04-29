@@ -12,13 +12,19 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 
 from .forms import LoginForm, RegisterForm, MiMundoForm
-from .models import Usuario, Plan, Suscripcion, UsuarioGeneroPreferencia
+from .models import Usuario, Plan, Suscripcion, UsuarioGeneroPreferencia, MetodoPago
 from apps.movies.models import Genero, Pelicula
 from collections import Counter
 from apps.interactions.models import Favorite, Watchlist, HistorialVisita
 from django.shortcuts import render
 
 from .recommendation_engine import obtener_recomendaciones_para_usuario
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.contrib import messages
+ # ajusta el import según tu app
+
 
 def login_view(request):
     context = {
@@ -170,7 +176,8 @@ def mi_mundo_view(request):
     )
 
     visitas_ids = list(
-        HistorialVisita.objects.filter(usuario=request.user)
+        HistorialVisita.objects
+        .filter(usuario=request.user, visible_en_historial=True)
         .order_by('-fecha_visita')
         .values_list('pelicula_id', flat=True)
     )
@@ -291,3 +298,61 @@ def cambiar_contrasena_view(request):
 
 def terminos_view(request):
     return render(request, 'terminos.html')
+
+@login_required
+def configuracion_view(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'update_payment':
+            nombre_tarjeta = request.POST.get('nombre_tarjeta', '').strip()
+            numero_tarjeta = request.POST.get('numero_tarjeta', '').replace(' ', '').strip()
+            fecha_expiracion = request.POST.get('fecha_expiracion', '').strip()
+
+            if nombre_tarjeta and numero_tarjeta and fecha_expiracion:
+                ultimos_4 = numero_tarjeta[-4:]
+                tarjeta_oculta = f"**** **** **** {ultimos_4}"
+
+                mes, anio = fecha_expiracion.split('/')
+                fecha_guardada = f"20{anio}-{mes}-01"
+
+                MetodoPago.objects.filter(usuario=request.user).delete()
+
+                MetodoPago.objects.create(
+                    usuario=request.user,
+                    numero_tarjeta=tarjeta_oculta,
+                    nombre_tarjeta=nombre_tarjeta,
+                    fecha_expiracion=fecha_guardada,
+                    cvv="***"
+                )
+
+            return redirect('users:configuracion')
+
+    suscripcion_actual = request.user.suscripcion_set.filter(
+        fecha_inicio__lte=timezone.now().date(),
+        fecha_fin__gte=timezone.now().date()
+    ).order_by('-plan__precio').first()
+
+    metodo_pago = MetodoPago.objects.filter(usuario=request.user).first()
+
+    favoritas_count = Favorite.objects.filter(user=request.user).count()
+    watchlist_count = Watchlist.objects.filter(user=request.user).count()
+    historial_count = HistorialVisita.objects.filter(usuario=request.user).count()
+
+    return render(request, 'configuracion.html', {
+        'suscripcion_actual': suscripcion_actual,
+        'metodo_pago': metodo_pago,
+        'favoritas_count': favoritas_count,
+        'watchlist_count': watchlist_count,
+        'historial_count': historial_count,
+    })
+
+@login_required
+def borrar_historial_view(request):
+    if request.method == 'POST':
+        HistorialVisita.objects.filter(usuario=request.user).update(
+            visible_en_historial=False
+        )
+        messages.success(request, 'Tus vistas recientes se ocultaron de Mi Mundo correctamente.')
+
+    return redirect('users:configuracion')

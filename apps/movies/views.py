@@ -92,13 +92,19 @@ def detalle_pelicula(request, id):
             usuario=request.user,
             pelicula=pelicula,
             fecha_visita__gte=hace_24_horas
-        ).exists()
+        ).first()
 
-        if not visita_reciente:
+        if visita_reciente:
+            if not visita_reciente.visible_en_historial:
+                visita_reciente.visible_en_historial = True
+                visita_reciente.fecha_visita = timezone.now()
+                visita_reciente.save(update_fields=['visible_en_historial', 'fecha_visita'])
+        else:
             HistorialVisita.objects.create(
                 usuario=request.user,
                 pelicula=pelicula,
-                fecha_visita=timezone.now()
+                fecha_visita=timezone.now(),
+                visible_en_historial=True
             )
 
     if request.method == 'POST' and request.user.is_authenticated and request.user.can_interact:
